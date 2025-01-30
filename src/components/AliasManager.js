@@ -233,7 +233,7 @@ const AliasManager = () => {
             Save Changes
           </Button>
           <Button variant="danger" size="sm" onClick={openDeleteModal}>
-            <FiTrash2 /> Delete
+            <FiTrash2 />
           </Button>
         </Modal.Footer>
       </Modal>

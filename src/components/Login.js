@@ -16,7 +16,7 @@ function Login({ onLogin }) {
   return (
     <Container className="d-flex justify-content-center align-items-center vh-100">
       <Card className="p-4 shadow-lg text-center" style={{ width: "350px" }}>
-        <Image src="/aobg_logo.png" alt="App Logo" height={60} className="mb-3" />
+        <Image src="/icon.svg" alt="App Logo" height={60} className="mb-3" />
         <h3 className="mb-3">AOBG Email Manager</h3>
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-4">
