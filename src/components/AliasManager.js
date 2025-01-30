@@ -50,25 +50,12 @@ function AliasManager() {
     }
   };
 
-  // Handle alias deletion
-  const deleteAlias = async (id) => {
-    try {
-      await axios.delete(
-        `${API_BASE_URL}/domains/${DOMAIN_NAME}/aliases/${id}`,
-        { auth: { username: API_KEY, password: "" } }
-      );
-      fetchAliases();
-    } catch (error) {
-      console.error("Error deleting alias:", error);
-    }
-  };
-
   return (
     <Container className="py-5">
       <h2>Email Alias Manager</h2>
 
       {/* Open Modal Button */}
-      <Button variant="primary" onClick={() => setShowModal(true)}>
+      <Button variant="primary" className="mb-3" onClick={() => setShowModal(true)}>
         Create Alias
       </Button>
 
@@ -97,15 +84,15 @@ function AliasManager() {
       </Table>
 
       {/* Alias Creation Modal */}
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Create Alias</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             {/* Alias Name Field */}
-            <Form.Group className="mb-3">
-              <Form.Label>Alias Name</Form.Label>
+            <Form.Group className="mb-4">
+              <Form.Label><strong>Alias Name</strong></Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter alias name"
@@ -118,8 +105,8 @@ function AliasManager() {
             </Form.Group>
 
             {/* Recipients Fields */}
-            <Form.Group className="mb-3">
-              <Form.Label>Add Recipients</Form.Label>
+            <Form.Group className="mb-4">
+              <Form.Label><strong>Add Recipients</strong></Form.Label>
               {recipients.map((email, index) => (
                 <Form.Control
                   key={index}
@@ -131,12 +118,21 @@ function AliasManager() {
                     newRecipients[index] = e.target.value;
                     setRecipients(newRecipients);
                   }}
-                  className="mb"
+                  className="mb-2"
                 />
               ))}
+              <Form.Text className="text-muted">Please add up to 10 recipients.</Form.Text>
             </Form.Group>
           </Form>
         </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="success" onClick={createAlias}>
+            Save
+          </Button>
+        </Modal.Footer>
       </Modal>
     </Container>
   );
