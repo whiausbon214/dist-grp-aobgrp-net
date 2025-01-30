@@ -1,37 +1,28 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { Container, Table, Button, Modal, Form, Row, Col } from "react-bootstrap";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Container, Button, Table, Modal, Form } from 'react-bootstrap';
 
-function AliasManager() {
+const AliasManager = () => {
   const [aliases, setAliases] = useState([]);
+  const [showModal, setShowModal] = useState(false);
   const [aliasName, setAliasName] = useState("");
   const [recipients, setRecipients] = useState(Array(10).fill(""));
-  const [showModal, setShowModal] = useState(false);
 
   const API_BASE_URL = "https://api.forwardemail.net/v1";
   const API_KEY = process.env.REACT_APP_API_KEY;
   const DOMAIN_NAME = process.env.REACT_APP_DOMAIN_NAME;
 
-  useEffect(() => {
-    fetchAliases();
-  }, []);
-
-  // Fetch existing aliases
   const fetchAliases = async () => {
     try {
-      const response = await axios.get(
-        `${API_BASE_URL}/domains/${DOMAIN_NAME}/aliases`,
-        {
-          auth: { username: API_KEY, password: "" },
-        }
-      );
+      const response = await axios.get(`${API_BASE_URL}/domains/${DOMAIN_NAME}/aliases`, {
+        auth: { username: API_KEY, password: "" }
+      });
       setAliases(response.data);
     } catch (error) {
       console.error("Error fetching aliases:", error);
     }
   };
 
-  // Handle alias creation
   const createAlias = async () => {
     const filteredRecipients = recipients.filter(email => email.trim() !== ""); // Remove empty fields
 
@@ -49,6 +40,21 @@ function AliasManager() {
       console.error("Error creating alias:", error);
     }
   };
+
+  const deleteAlias = async (aliasName) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/domains/${DOMAIN_NAME}/aliases/${aliasName}`, {
+        auth: { username: API_KEY, password: "" }
+      });
+      fetchAliases();
+    } catch (error) {
+      console.error("Error deleting alias:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAliases();
+  }, []);
 
   return (
     <Container className="py-5">
@@ -70,11 +76,11 @@ function AliasManager() {
         </thead>
         <tbody>
           {aliases.map((alias) => (
-            <tr key={alias.id}>
+            <tr key={alias.name}>
               <td>{alias.name}</td>
               <td>{alias.recipients.join(", ")}</td>
               <td>
-                <Button variant="danger" onClick={() => deleteAlias(alias.id)}>
+                <Button variant="danger" onClick={() => deleteAlias(alias.name)}>
                   Delete
                 </Button>
               </td>
@@ -83,16 +89,16 @@ function AliasManager() {
         </tbody>
       </Table>
 
-      {/* Alias Creation Modal */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+      {/* Modal */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Create Alias</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             {/* Alias Name Field */}
-            <Form.Group className="mb-4">
-              <Form.Label><strong>Alias Name</strong></Form.Label>
+            <Form.Group className="mb-3">
+              <Form.Label>Alias Name</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter alias name"
