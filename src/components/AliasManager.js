@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Container, Table, Form, Button, Row, Col } from "react-bootstrap";
+import { Container, Table, Button, Modal, Form, Row, Col } from "react-bootstrap";
 
 function AliasManager() {
   const [aliases, setAliases] = useState([]);
   const [aliasName, setAliasName] = useState("");
-  const [recipients, setRecipients] = useState("");
+  const [recipients, setRecipients] = useState(Array(10).fill(""));
+  const [showModal, setShowModal] = useState(false);
 
   const API_BASE_URL = "https://api.forwardemail.net/v1";
   const API_KEY = process.env.REACT_APP_API_KEY;
@@ -15,16 +16,13 @@ function AliasManager() {
     fetchAliases();
   }, []);
 
-  // Fetch aliases from API
+  // Fetch existing aliases
   const fetchAliases = async () => {
     try {
       const response = await axios.get(
         `${API_BASE_URL}/domains/${DOMAIN_NAME}/aliases`,
         {
-          auth: {
-            username: API_KEY,
-            password: "",
-          },
+          auth: { username: API_KEY, password: "" },
         }
       );
       setAliases(response.data);
@@ -33,41 +31,31 @@ function AliasManager() {
     }
   };
 
-  // Create a new alias
+  // Handle alias creation
   const createAlias = async () => {
+    const filteredRecipients = recipients.filter(email => email.trim() !== ""); // Remove empty fields
+
     try {
       await axios.post(
         `${API_BASE_URL}/domains/${DOMAIN_NAME}/aliases`,
-        {
-          name: aliasName,
-          recipients: recipients.split(",").map((email) => email.trim()),
-        },
-        {
-          auth: {
-            username: API_KEY,
-            password: "",
-          },
-        }
+        { name: aliasName, recipients: filteredRecipients },
+        { auth: { username: API_KEY, password: "" } }
       );
       fetchAliases();
+      setShowModal(false);
       setAliasName("");
-      setRecipients("");
+      setRecipients(Array(10).fill(""));
     } catch (error) {
       console.error("Error creating alias:", error);
     }
   };
 
-  // Delete an alias
+  // Handle alias deletion
   const deleteAlias = async (id) => {
     try {
       await axios.delete(
         `${API_BASE_URL}/domains/${DOMAIN_NAME}/aliases/${id}`,
-        {
-          auth: {
-            username: API_KEY,
-            password: "",
-          },
-        }
+        { auth: { username: API_KEY, password: "" } }
       );
       fetchAliases();
     } catch (error) {
@@ -79,36 +67,13 @@ function AliasManager() {
     <Container className="py-5">
       <h2>Email Alias Manager</h2>
 
-      {/* Alias Creation Form */}
-      <Form className="mb-4">
-        <Row>
-          <Col>
-            <Form.Control
-              type="text"
-              placeholder="Alias Name"
-              value={aliasName}
-              onChange={(e) => setAliasName(e.target.value)}
-            />
-          </Col>
-          <Col>
-            <Form.Control
-              type="text"
-              placeholder="Recipients (comma-separated)"
-              value={recipients}
-              onChange={(e) => setRecipients(e.target.value)}
-            />
-          </Col>
-          <Col>
-            <Button variant="success" onClick={createAlias}>
-              Create Alias
-            </Button>
-          </Col>
-        </Row>
-      </Form>
+      {/* Open Modal Button */}
+      <Button variant="primary" onClick={() => setShowModal(true)}>
+        Create Alias
+      </Button>
 
       {/* Alias List */}
-      <h4>Existing Aliases</h4>
-      <Table striped bordered hover>
+      <Table striped bordered hover className="mt-3">
         <thead>
           <tr>
             <th>Alias</th>
@@ -130,8 +95,40 @@ function AliasManager() {
           ))}
         </tbody>
       </Table>
-    </Container>
-  );
-}
 
-export default AliasManager;
+      {/* Alias Creation Modal */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Create Alias</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            {/* Alias Name Field */}
+            <Form.Group className="mb-3">
+              <Form.Label>Alias Name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter alias name"
+                value={aliasName}
+                onChange={(e) => setAliasName(e.target.value)}
+              />
+              <Form.Text className="text-muted">
+                Please enter a short alias for the agency. Do not include spaces or special characters other than period or dash. Do not add the domain at the end.
+              </Form.Text>
+            </Form.Group>
+
+            {/* Recipients Fields */}
+            <Form.Group className="mb-3">
+              <Form.Label>Add Recipients</Form.Label>
+              {recipients.map((email, index) => (
+                <Form.Control
+                  key={index}
+                  type="email"
+                  placeholder={`Recipient ${index + 1}`}
+                  value={email}
+                  onChange={(e) => {
+                    const newRecipients = [...recipients];
+                    newRecipients[index] = e.target.value;
+                    setRecipients(newRecipients);
+                  }}
+                  className="mb
