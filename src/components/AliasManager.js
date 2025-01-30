@@ -131,4 +131,15 @@ function AliasManager() {
                     newRecipients[index] = e.target.value;
                     setRecipients(newRecipients);
                   }}
-                  className="mb
+                  className="mb"
+                />
+              ))}
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+      </Modal>
+    </Container>
+  );
+}
+
+export default AliasManager;
