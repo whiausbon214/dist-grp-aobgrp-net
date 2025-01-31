@@ -1,8 +1,0 @@
-.login-container {
-  background: radial-gradient(circle, rgba(0, 123, 255, 0.75), rgba(0, 123, 255, 0.5));
-  backdrop-filter: blur(75%);
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}

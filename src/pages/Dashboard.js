@@ -75,40 +75,6 @@ const Dashboard = () => {
           </Col>
         ))}
       </Row>
-
-      {/* Quick Links */}
-      <Row className="mt-4">
-        {quickLinks.map((link, index) => (
-          <Col key={index} md={3} className="mb-4">
-            <Card className="h-100 shadow">
-              <Card.Body className="text-center">
-                <div>{link.icon}</div>
-                <Card.Title className="mt-2">{link.name}</Card.Title>
-                <a href={link.url} target="_blank" rel="noopener noreferrer">
-                  <Button variant="primary">Go to {link.name}</Button>
-                </a>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
-      </Row>
-
-      {/* Admin Quick Links */}
-      <Row className="mt-4">
-        {adminQuickLinks.map((link, index) => (
-          <Col key={index} md={3} className="mb-4">
-            <Card className="h-100 shadow">
-              <Card.Body className="text-center">
-                <div>{link.icon}</div>
-                <Card.Title className="mt-2">{link.name}</Card.Title>
-                <a href={link.url} target="_blank" rel="noopener noreferrer">
-                  <Button variant="primary">Go to {link.name}</Button>
-                </a>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
-      </Row>
     </Container>
   );
 }

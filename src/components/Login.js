@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Container, Form, Button, Card, Image } from "react-bootstrap";
-import "./Login.css"; // Import the CSS file
+
 
 function Login({ onLogin }) {
   const [password, setPassword] = useState("");
