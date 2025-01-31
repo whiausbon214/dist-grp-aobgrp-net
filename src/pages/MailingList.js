@@ -3,7 +3,7 @@ import { Container, Row, Col, Button, Table, Modal, Form, Pagination, InputGroup
 import { FiEdit, FiTrash2, FiSearch } from 'react-icons/fi';
 import axios from 'axios';
 
-const MailChimpManager = () => {
+const MailingList = () => {
   const [members, setMembers] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -212,4 +212,4 @@ const MailChimpManager = () => {
   );
 };
 
-export default MailChimpManager;
+export default MailingList;
