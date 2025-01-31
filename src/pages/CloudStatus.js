@@ -3,6 +3,8 @@ import { Container, Row, Col, Button, Tabs, Tab } from 'react-bootstrap';
 import axios from 'axios';
 import { FaRedo, FaDigitalOcean, FaGlobe } from 'react-icons/fa';
 import { SiCloudflare } from 'react-icons/si';
+import { fetchData as fetchDigitalOceanData } from '../components/DigitalOceanTab';
+import { fetchData as fetchCloudflareData } from '../components/CloudflareTab';
 import DigitalOceanTab from '../components/DigitalOceanTab';
 import CloudflareTab from '../components/CloudflareTab';
 
@@ -22,18 +24,22 @@ const CloudStatus = () => {
 
     try {
       // Call data fetching functions from separate components
-      await Promise.all([
-        DigitalOceanTab.fetchData(),
-        CloudflareTab.fetchData()
+      const [doResult, cfResult] = await Promise.allSettled([
+        fetchDigitalOceanData(),
+        fetchCloudflareData()
       ]);
+
+      if (doResult.status === "rejected" || cfResult.status === "rejected") {
+        throw new Error("Failed to fetch data from one or more sources.");
+      }
 
       setLastUpdated(new Date());
     } catch (err) {
       console.error('Error fetching data:', err);
       setError("Failed to fetch data. Please check your API token or network.");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const formatTimeAgo = (date) => {
