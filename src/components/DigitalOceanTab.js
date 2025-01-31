@@ -100,5 +100,28 @@ const DigitalOceanTab = () => {
   );
 };
 
+const fetchData = async () => {
+  const headers = { 'Authorization': `Bearer ${process.env.REACT_APP_DO_API_TOKEN}` };
+
+  try {
+    const [dropletsRes, databasesRes, billingRes, cdnRes] = await Promise.allSettled([
+      axios.get('https://api.digitalocean.com/v2/droplets', { headers }),
+      axios.get('https://api.digitalocean.com/v2/databases', { headers }),
+      axios.get('https://api.digitalocean.com/v2/customers/my/balance', { headers }),
+      axios.get('https://api.digitalocean.com/v2/cdn/endpoints', { headers }),
+    ]);
+
+    return {
+      droplets: dropletsRes.status === "fulfilled" ? dropletsRes.value.data.droplets : [],
+      databases: databasesRes.status === "fulfilled" ? databasesRes.value.data.databases : [],
+      billing: billingRes.status === "fulfilled" ? billingRes.value.data : null,
+      cdnEndpoints: cdnRes.status === "fulfilled" ? cdnRes.value.data.endpoints : [],
+    };
+  } catch (err) {
+    console.error('Error fetching DigitalOcean data:', err);
+    throw new Error("Failed to fetch DigitalOcean data.");
+  }
+};
+
 export { fetchData };
 export default DigitalOceanTab;
