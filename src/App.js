@@ -3,7 +3,7 @@ import AppNavbar from "./components/Navbar";
 import Dashboard from "./pages/Dashboard";
 import DistributionGroups from "./pages/DistributionGroups";
 import CloudStatus from "./pages/CloudStatus"; // Import the CloudStatus component
-import '@ibm/plex-sans';
+import './app.scss';
 
 function App() {
   return (

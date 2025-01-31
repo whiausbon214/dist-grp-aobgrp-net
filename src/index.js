@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import '@carbon/react/scss/index.scss'; 
+import '@carbon/react/css/index.css'; 
 
 
 ReactDOM.render(<App />, document.getElementById('root'));
