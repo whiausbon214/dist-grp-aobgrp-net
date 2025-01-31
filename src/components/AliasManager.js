@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Container, Button, Table, Modal, Form } from 'react-bootstrap';
 import { FiEdit, FiTrash2, FiAlertTriangle } from 'react-icons/fi';
@@ -19,7 +19,7 @@ const AliasManager = () => {
   const APP_PASSWORD = process.env.REACT_APP_PASSWORD;
 
   // Fetch aliases from the API
-  const fetchAliases = async () => {
+  const fetchAliases = useCallback(async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/domains/${DOMAIN_NAME}/aliases`, {
         auth: { username: API_KEY, password: "" }
@@ -28,7 +28,7 @@ const AliasManager = () => {
     } catch (error) {
       console.error("Error fetching aliases:", error);
     }
-  };
+  }, [API_BASE_URL, API_KEY, DOMAIN_NAME]);
 
   useEffect(() => {
     fetchAliases();

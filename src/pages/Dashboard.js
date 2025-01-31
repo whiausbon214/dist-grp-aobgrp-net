@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { FiExternalLink, FiMail, FiCloud } from 'react-icons/fi';
+import { FiMail, FiCloud } from 'react-icons/fi';
 import { SiMailchimp } from 'react-icons/si';
 
 const Dashboard = () => {

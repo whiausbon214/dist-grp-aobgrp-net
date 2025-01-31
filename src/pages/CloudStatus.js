@@ -21,7 +21,9 @@ const CloudStatus = () => {
     setLoading(true);
     setError(null);
     const DO_API_TOKEN = process.env.REACT_APP_DO_API_TOKEN;
+    const DO_SPACES_API_TOKEN = process.env.REACT_APP_DO_SPACES_API_TOKEN;
     const headers = { 'Authorization': `Bearer ${DO_API_TOKEN}` };
+    const spacesHeaders = { 'Authorization': `Bearer ${DO_SPACES_API_TOKEN}` };
 
     try {
       const [dropletsRes, databasesRes, appsRes, billingRes, cdnRes, spacesRes] = await Promise.allSettled([
@@ -30,7 +32,7 @@ const CloudStatus = () => {
         axios.get('https://api.digitalocean.com/v2/apps', { headers }),
         axios.get('https://api.digitalocean.com/v2/customers/my/balance', { headers }),
         axios.get('https://api.digitalocean.com/v2/cdn/endpoints', { headers }),
-        axios.get('https://api.digitalocean.com/v2/spaces', { headers })
+        axios.get('https://api.digitalocean.com/v2/spaces', { headers: spacesHeaders })
       ]);
 
       if (dropletsRes.status === "fulfilled") setDroplets(dropletsRes.value.data.droplets);
@@ -40,7 +42,8 @@ const CloudStatus = () => {
       if (cdnRes.status === "fulfilled") setCdnEndpoints(cdnRes.value.data.endpoints);
       if (spacesRes.status === "fulfilled") setSpaces(spacesRes.value.data.spaces);
     } catch (err) {
-      setError("Failed to fetch some data. Please check your API token or network.");
+      console.error('Error fetching data:', err);
+      setError("Failed to fetch data. Please check your API token or network.");
     }
 
     setLoading(false);
@@ -66,6 +69,14 @@ const CloudStatus = () => {
     return (
       <Container className="py-5 text-center">
         <Spinner animation="border" />
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container className="py-5 text-center">
+        <Alert variant="danger">{error}</Alert>
       </Container>
     );
   }
