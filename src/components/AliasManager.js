@@ -18,10 +18,6 @@ const AliasManager = () => {
   const DOMAIN_NAME = process.env.REACT_APP_DOMAIN_NAME;
   const APP_PASSWORD = process.env.REACT_APP_PASSWORD;
 
-  useEffect(() => {
-    fetchAliases();
-  }, [fetchAliases]);
-
   // Fetch aliases from the API
   const fetchAliases = async () => {
     try {
@@ -33,6 +29,10 @@ const AliasManager = () => {
       console.error("Error fetching aliases:", error);
     }
   };
+
+  useEffect(() => {
+    fetchAliases();
+  }, []);
 
   // Open the Create Alias Modal
   const openCreateModal = () => {
