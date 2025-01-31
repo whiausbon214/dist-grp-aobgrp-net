@@ -9,7 +9,7 @@ const CloudStatus = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const DO_API_TOKEN = process.env.DO_API_TOKEN;
+    const DO_API_TOKEN = process.env.REACT_APP_DO_API_TOKEN;
     const fetchDroplets = async () => {
       try {
         const response = await axios.get('https://api.digitalocean.com/v2/droplets', {
