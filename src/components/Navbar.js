@@ -1,11 +1,11 @@
-import { AppBar, Toolbar, IconButton, Typography, Box } from '@mui/joy';
+import { Box, Toolbar, IconButton, Typography } from '@mui/joy';
 import { NavLink } from 'react-router-dom';
 import { FiMail, FiCloud, FiHome } from 'react-icons/fi';
 import { SiMailchimp } from 'react-icons/si';
 
 function AppNavbar() {
   return (
-    <AppBar position="static">
+    <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', mb: 2 }}>
       <Toolbar>
         <Box display="flex" alignItems="center" flexGrow={1}>
           <img src="/icon.svg" alt="AOBG" height={40} style={{ marginRight: '16px' }} />
@@ -30,7 +30,7 @@ function AppNavbar() {
           </IconButton>
         </Box>
       </Toolbar>
-    </AppBar>
+    </Box>
   );
 }
 
