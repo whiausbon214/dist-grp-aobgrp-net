@@ -168,21 +168,21 @@ const CloudStatus = () => {
                         <Typography>Metadata</Typography>
                       </AccordionSummary>
                       <AccordionDetails>
-                        <Table>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell>Key</TableCell>
-                              <TableCell>Value</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
+                        <Table variant="soft" borderAxis="both" hoverRow sx={{ mt: 2 }}>
+                          <Table.Head>
+                            <Table.Row>
+                              <Table.Cell>Key</Table.Cell>
+                              <Table.Cell>Value</Table.Cell>
+                            </Table.Row>
+                          </Table.Head>
+                          <Table.Body>
                             {Object.entries(droplet.metadata).map(([key, value]) => (
                               <TableRow key={key}>
-                                <TableCell>{key}</TableCell>
-                                <TableCell>{value}</TableCell>
-                              </TableRow>
+                                <Table.Cell>{key}</Table.Cell>
+                                <Table.Cell>{value}</Table.Cell>
+                              </Table.Row>
                             ))}
-                          </TableBody>
+                          </Table.Body>
                         </Table>
                       </AccordionDetails>
                     </Accordion>

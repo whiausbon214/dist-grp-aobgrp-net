@@ -42,30 +42,30 @@ const AliasManager = () => {
       <Button variant="solid" color="primary" onClick={() => setShowCreateModal(true)}>
         Create Alias
       </Button>
-      <Table>
-        <thead>
-          <tr>
-            <th>Alias</th>
-            <th>Recipients</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table variant="soft" borderAxis="both" hoverRow sx={{ mt: 2 }}>
+        <Table.Head>
+          <Table.Row>
+            <Table.Cell variant='soft' component='th'>Alias</Table.Cell>
+            <Table.Cell variant='soft' component='th'>Recipients</Table.Cell>
+            <Table.Cell variant='soft' component='th'>Actions</Table.Cell>
+          </Table.Row>
+        </Table.Head>
+        <Table.Body>
           {filteredAliases.map((alias) => (
             <tr key={alias.id}>
-              <td>{alias.name}</td>
-              <td>{alias.recipients.join(", ")}</td>
-              <td>
+              <Table.Cell>{alias.name}</Table.Cell>
+              <Table.Cell>{alias.recipients.join(", ")}</Table.Cell>
+              <Table.Cell>
                 <Button variant="outlined" color="primary" onClick={() => { setSelectedAlias(alias); setShowEditModal(true); }}>
                   <FiEdit />
                 </Button>
                 <Button variant="outlined" color="danger" onClick={() => { setSelectedAlias(alias); setShowDeleteModal(true); }}>
                   <FiTrash2 />
                 </Button>
-              </td>
-            </tr>
+              </Table.Cell>
+            </Table.Row>
           ))}
-        </tbody>
+        </Table.Body>
       </Table>
 
       <Modal open={showCreateModal} onClose={() => setShowCreateModal(false)}>
