@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Container, Form, Button, Card, Image } from "react-bootstrap";
+import "./Login.css"; // Import the CSS file
 
 function Login({ onLogin }) {
   const [password, setPassword] = useState("");
@@ -14,7 +15,7 @@ function Login({ onLogin }) {
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center vh-100">
+    <Container className="login-container">
       <Card className="p-4 shadow-lg text-center" style={{ width: "350px" }}>
         <Image src="/icon.svg" alt="App Logo" height={60} className="mb-3" />
         <h3 className="mb-3">AOBG Email Manager</h3>
