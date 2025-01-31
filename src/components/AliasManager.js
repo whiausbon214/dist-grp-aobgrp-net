@@ -37,6 +37,19 @@ const AliasManager = () => {
   // Filter out the alias 'commissions@aobgrp.com'
   const filteredAliases = aliases.filter(alias => alias.name !== 'commissions@aobgrp.com');
 
+  // Define the deleteAlias function
+  const deleteAlias = async () => {
+    try {
+      await axios.delete(`${API_BASE_URL}/domains/${DOMAIN_NAME}/aliases/${selectedAlias.id}`, {
+        auth: { username: API_KEY, password: APP_PASSWORD }
+      });
+      setShowDeleteModal(false);
+      fetchAliases();
+    } catch (error) {
+      console.error("Error deleting alias:", error);
+    }
+  };
+
   return (
     <Container>
       <Button variant="primary" onClick={() => setShowCreateModal(true)}>
