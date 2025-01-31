@@ -67,4 +67,5 @@ const CloudflareTab = () => {
   );
 };
 
+export { fetchData };
 export default CloudflareTab;

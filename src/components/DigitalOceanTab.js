@@ -100,4 +100,5 @@ const DigitalOceanTab = () => {
   );
 };
 
+export { fetchData };
 export default DigitalOceanTab;
