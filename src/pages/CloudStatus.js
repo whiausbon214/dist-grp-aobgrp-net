@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Grid, Card, CardContent, Typography, CircularProgress, Alert, Button, Box, Accordion, AccordionSummary, AccordionDetails, Table, TableBody, TableCell, TableHead, TableRow, Tabs, Tab } from '@mui/joy';
+import { Grid, Row, Column, Button, Tabs, Tab, TabList, TabPanels, TabPanel, DataTable, Table, TableHead, TableRow, TableHeader, TableBody, TableCell, 
+  InlineNotification, Accordion, AccordionItem } from '@carbon/react';
 import axios from 'axios';
 import { FaServer, FaDatabase, FaCloud, FaMoneyBillWave, FaGlobe, FaRedo, FaChevronDown, FaWater } from 'react-icons/fa';
 import { SiCloudflare } from 'react-icons/si';
@@ -9,12 +10,9 @@ const CloudStatus = () => {
   const [databases, setDatabases] = useState([]);
   const [billing, setBilling] = useState(null);
   const [cdnEndpoints, setCdnEndpoints] = useState([]);
-const [apps, setApps] = useState([]);
-const [billingBalance, setBillingBalance] = useState(null);
   const [spaces, setSpaces] = useState([]);
   const [cloudflareMetrics, setCloudflareMetrics] = useState([]);
   const [loading, setLoading] = useState(true);
-const [expandedApp, setExpandedApp] = useState(null);
   const [error, setError] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [expandedDroplet, setExpandedDroplet] = useState(null);
@@ -32,12 +30,11 @@ const [expandedApp, setExpandedApp] = useState(null);
     const CF_API_TOKEN = process.env.REACT_APP_CF_API_TOKEN;
     const CF_ACCOUNT_ID = process.env.REACT_APP_CF_ACCOUNT_ID;
     const headers = { 'Authorization': `Bearer ${DO_API_TOKEN}` };
-const billingHeaders = { 'Authorization': `Bearer ${DO_API_TOKEN}` };
     const spacesHeaders = { 'Authorization': `Bearer ${DO_SPACES_API_TOKEN}` };
     const cfHeaders = { 'Authorization': `Bearer ${CF_API_TOKEN}` };
 
     try {
-      const [dropletsRes, databasesRes, billingRes, cdnRes, spacesRes, cloudflareRes, appsRes, billingBalanceRes] = await Promise.allSettled([
+      const [dropletsRes, databasesRes, billingRes, cdnRes, spacesRes, cloudflareRes] = await Promise.allSettled([
         axios.get('https://api.digitalocean.com/v2/droplets', { headers }),
         axios.get('https://api.digitalocean.com/v2/databases', { headers }),
         axios.get('https://api.digitalocean.com/v2/customers/my/balance', { headers }),
@@ -58,10 +55,7 @@ const billingHeaders = { 'Authorization': `Bearer ${DO_API_TOKEN}` };
       if (billingRes.status === "fulfilled") setBilling(billingRes.value.data);
       if (cdnRes.status === "fulfilled") setCdnEndpoints(cdnRes.value.data.endpoints);
       if (spacesRes.status === "fulfilled") setSpaces(spacesRes.value.data.spaces);
-      if (appsRes.status === "fulfilled") setApps(appsRes.value.data.apps);
-    if (billingBalanceRes.status === "fulfilled") setBillingBalance(billingBalanceRes.value.data.billingBalance);
-
-    if (cloudflareRes.status === "fulfilled") {
+      if (cloudflareRes.status === "fulfilled") {
         const zones = cloudflareRes.value.data.result;
         const metrics = zones.filter(zone => ['aobgrp.com', 'aobgagents.com'].includes(zone.name));
         setCloudflareMetrics(metrics);
@@ -80,15 +74,15 @@ const billingHeaders = { 'Authorization': `Bearer ${DO_API_TOKEN}` };
     switch (status) {
       case "active":
       case "running":
-        return "success";
+        return "green";
       case "pending":
-        return "warning";
+        return "yellow";
       case "offline":
       case "error":
       case "stopped":
-        return "danger";
+        return "red";
       default:
-        return "secondary";
+        return "gray";
     }
   };
 
@@ -110,207 +104,167 @@ const billingHeaders = { 'Authorization': `Bearer ${DO_API_TOKEN}` };
     setExpandedDroplet(expandedDroplet === dropletId ? null : dropletId);
   };
 
-  const handleTabChange = (event, newValue) => {
-    setSelectedTab(newValue);
+  const handleTabChange = (index) => {
+    setSelectedTab(index);
   };
 
   if (loading) {
     return (
-      <Container sx={{ py: 5, textAlign: 'center' }}>
-        <CircularProgress />
-      </Container>
+      <Grid>
+        <Row>
+          <Column>
+            <InlineNotification kind="info" title="Loading" subtitle="Fetching data..." />
+          </Column>
+        </Row>
+      </Grid>
     );
   }
 
   if (error) {
     return (
-      <Container sx={{ py: 5, textAlign: 'center' }}>
-        <Alert severity="error">{error}</Alert>
-      </Container>
+      <Grid>
+        <Row>
+          <Column>
+            <InlineNotification kind="error" title="Error" subtitle={error} />
+          </Column>
+        </Row>
+      </Grid>
     );
   }
 
   return (
-    <Container sx={{ py: 5 }}>
-<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-<Typography level='h2' component='h2'>Cloud Resources Status</Typography>
-<Button onClick={fetchData} variant='soft' color='primary' startIcon={<FaRedo />}>Refresh Now</Button>
-</Box>
-      <Typography level="h2" component="h2" gutterBottom>
-        Cloud Resources Status
-      </Typography>
-      <Box display="flex" alignItems="center" mb={4}>
-        <Button onClick={fetchData} variant="contained" color="primary" startIcon={<FaRedo />}>
-          Refresh Now
-        </Button>
-        <Typography level="body2" ml={2}>
-          Last updated: {formatTimeAgo(lastUpdated)}
-        </Typography>
-      </Box>
+    <Grid>
+      <Row>
+        <Column>
+          <h2>Cloud Resources Status</h2>
+          <Button onClick={fetchData} renderIcon={FaRedo}>
+            Refresh Now
+          </Button>
+          <p>Last updated: {formatTimeAgo(lastUpdated)}</p>
+        </Column>
+      </Row>
 
-      <Tabs variant="soft" color="primary" size="lg" sx={{ mt: 2, borderRadius: "md" }} value={selectedTab} onChange={handleTabChange}>
-        <TabList sx={{ mb: 2 }}>
-<Tab label="Digital Ocean" icon={<FaWater />} />
-        <TabList sx={{ mb: 2 }}>
-<Tab label="Cloudflare" icon={<SiCloudflare />} />
-      </TabList>
-</Tabs>
+      <Tabs selected={selectedTab} onSelectionChange={handleTabChange}>
+        <TabList aria-label="Cloud Resources">
+          <Tab>
+            <FaWater /> Digital Ocean
+          </Tab>
+          <Tab>
+            <SiCloudflare /> Cloudflare
+          </Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel>
+            <h3><FaServer /> Droplets</h3>
+            <Row>
+              {droplets.map((droplet, index) => (
+                <Column key={index} sm={4}>
+                  <Accordion>
+                    <AccordionItem title={`${droplet.name} (${droplet.status})`} open={expandedDroplet === droplet.id} onClick={() => handleAccordionToggle(droplet.id)}>
+                      <p><strong>Status:</strong> {droplet.status}</p>
+                      <p><strong>IP Address:</strong> {droplet.networks.v4[0]?.ip_address || "N/A"}</p>
+                      <p><strong>Region:</strong> {droplet.region.name}</p>
+                      <DataTable rows={Object.entries(droplet.metadata).map(([key, value]) => ({ id: key, key, value }))} headers={[{ key: 'key', header: 'Key' }, { key: 'value', header: 'Value' }]}>
+                        {({ rows, headers, getHeaderProps, getRowProps }) => (
+                          <Table>
+                            <TableHead>
+                              <TableRow>
+                                {headers.map(header => (
+                                  <TableHeader {...getHeaderProps({ header })}>
+                                    {header.header}
+                                  </TableHeader>
+                                ))}
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {rows.map(row => (
+                                <TableRow {...getRowProps({ row })}>
+                                  {row.cells.map(cell => (
+                                    <TableCell key={cell.id}>{cell.value}</TableCell>
+                                  ))}
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        )}
+                      </DataTable>
+                    </AccordionItem>
+                  </Accordion>
+                </Column>
+              ))}
+            </Row>
 
-      {selectedTab === 0 && (
-        <>
-          <Typography level="h3" component="h3" gutterBottom>
-            <FaServer /> Droplets
-          </Typography>
-          <Grid container spacing={2}>
-            {droplets.map((droplet, index) => (
-              <Grid key={index} item xs={12} sm={6} md={4}>
-                <Card variant="outlined" sx={{ height: '100%' }}>
-                  <CardContent>
-                    <Typography level="h5" component="h3">
-                      {droplet.name} <span className={getStatusColor(droplet.status)}>●</span>
-                    </Typography>
-                    <Typography level="body2">
-                      <strong>Status:</strong> {droplet.status}<br />
-                      <strong>IP Address:</strong> {droplet.networks.v4[0]?.ip_address || "N/A"}<br />
-                      <strong>Region:</strong> {droplet.region.name}
-                    </Typography>
-                    <Button onClick={() => handleAccordionToggle(droplet.id)} variant="text" endIcon={<FaChevronDown />}>
-                      View Metadata
-                    </Button>
-                    <Accordion expanded={expandedDroplet === droplet.id}>
-                      <AccordionSummary>
-                        <Typography>Metadata</Typography>
-                      </AccordionSummary>
-                      <AccordionDetails>
-                        <Table variant="soft" borderAxis="both" hoverRow size="md" sx={{ mt: 2 }}>
-                          <Table.Head>
-                            <Table.Row>
-                              <Table.Cell>Key</Table.Cell>
-                              <Table.Cell>Value</Table.Cell>
-                            </Table.Row>
-                          </Table.Head>
-                          <Table.Body>
-                            {Object.entries(droplet.metadata).map(([key, value]) => (
-                              <TableRow key={key}>
-                                <Table.Cell>{key}</Table.Cell>
-                                <Table.Cell>{value}</Table.Cell>
-                              </Table.Row>
-                            ))}
-                          </Table.Body>
-                        </Table>
-                      </AccordionDetails>
-                    </Accordion>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+            <h3><FaCloud /> Spaces</h3>
+            <Row>
+              {spaces.map((space, index) => (
+                <Column key={index} sm={4}>
+                  <Accordion>
+                    <AccordionItem title={space.name}>
+                      <p><strong>Region:</strong> {space.region}</p>
+                    </AccordionItem>
+                  </Accordion>
+                </Column>
+              ))}
+            </Row>
 
-          <Typography level="h3" component="h3" gutterBottom>
-            <FaCloud /> Spaces
-          </Typography>
-          <Grid container spacing={2}>
-            {spaces.map((space, index) => (
-              <Grid key={index} item xs={12} sm={6} md={4}>
-                <Card variant="outlined" sx={{ height: '100%' }}>
-                  <CardContent>
-                    <Typography level="h5" component="h3">
-                      {space.name}
-                    </Typography>
-                    <Typography level="body2">
-                      <strong>Region:</strong> {space.region}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+            <h3><FaDatabase /> Databases</h3>
+            <Row>
+              {databases.map((database, index) => (
+                <Column key={index} sm={4}>
+                  <Accordion>
+                    <AccordionItem title={`${database.name} (${database.status})`}>
+                      <p><strong>Status:</strong> {database.status}</p>
+                      <p><strong>Engine:</strong> {database.engine}</p>
+                      <p><strong>Region:</strong> {database.region}</p>
+                    </AccordionItem>
+                  </Accordion>
+                </Column>
+              ))}
+            </Row>
 
-          <Typography level="h3" component="h3" gutterBottom>
-            <FaDatabase /> Databases
-          </Typography>
-          <Grid container spacing={2}>
-            {databases.map((database, index) => (
-              <Grid key={index} item xs={12} sm={6} md={4}>
-                <Card variant="outlined" sx={{ height: '100%' }}>
-                  <CardContent>
-                    <Typography level="h5" component="h3">
-                      {database.name} <span className={getStatusColor(database.status)}>●</span>
-                    </Typography>
-                    <Typography level="body2">
-                      <strong>Status:</strong> {database.status}<br />
-                      <strong>Engine:</strong> {database.engine}<br />
-                      <strong>Region:</strong> {database.region}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+            <h3><FaGlobe /> CDN Endpoints</h3>
+            <Row>
+              {cdnEndpoints.map((cdn, index) => (
+                <Column key={index} sm={4}>
+                  <Accordion>
+                    <AccordionItem title={cdn.origin}>
+                      <p><strong>Endpoint:</strong> {cdn.endpoint}</p>
+                    </AccordionItem>
+                  </Accordion>
+                </Column>
+              ))}
+            </Row>
 
-          <Typography level="h3" component="h3" gutterBottom>
-            <FaGlobe /> CDN Endpoints
-          </Typography>
-          <Grid container spacing={2}>
-            {cdnEndpoints.map((cdn, index) => (
-              <Grid key={index} item xs={12} sm={6} md={4}>
-                <Card variant="outlined" sx={{ height: '100%' }}>
-                  <CardContent>
-                    <Typography level="h5" component="h3">
-                      {cdn.origin}
-                    </Typography>
-                    <Typography level="body2">
-                      <strong>Endpoint:</strong> {cdn.endpoint}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-
-          <Typography level="h3" component="h3" gutterBottom>
-            <FaMoneyBillWave /> Account Balance
-          </Typography>
-          {billing ? (
-            <Card variant="outlined" sx={{ height: '100%' }}>
-              <CardContent>
-                <Typography level="body2">
-                  <strong>Account Balance:</strong> ${billing.billingBalance}
-                </Typography>
-              </CardContent>
-            </Card>
-          ) : (
-            <Typography level="body2">No billing data available.</Typography>
-          )}
-        </>
-      )}
-
-      {selectedTab === 1 && (
-        <>
-          <Typography level="h3" component="h3" gutterBottom>
-            <FaGlobe /> Cloudflare Metrics
-          </Typography>
-          <Grid container spacing={2}>
-            {cloudflareMetrics.map((zone, index) => (
-              <Grid key={index} item xs={12} sm={6} md={4}>
-                <Card variant="outlined" sx={{ height: '100%' }}>
-                  <CardContent>
-                    <Typography level="h5" component="h3">
-                      {zone.name}
-                    </Typography>
-                    <Typography level="body2">
-                      <strong>Status:</strong> {zone.status}<br />
-                      <strong>Plan:</strong> {zone.plan.name}<br />
-                      <strong>Development Mode:</strong> {zone.development_mode ? "Enabled" : "Disabled"}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </>
-      )}
-    </Container>
+            <h3><FaMoneyBillWave /> Account Balance</h3>
+            {billing ? (
+              <Accordion>
+                <AccordionItem title="Account Balance">
+                  <p><strong>Account Balance:</strong> ${billing.account_balance}</p>
+                </AccordionItem>
+              </Accordion>
+            ) : (
+              <p>No billing data available.</p>
+            )}
+          </TabPanel>
+          <TabPanel>
+            <h3><FaGlobe /> Cloudflare Metrics</h3>
+            <Row>
+              {cloudflareMetrics.map((zone, index) => (
+                <Column key={index} sm={4}>
+                  <Accordion>
+                    <AccordionItem title={zone.name}>
+                      <p><strong>Status:</strong> {zone.status}</p>
+                      <p><strong>Plan:</strong> {zone.plan.name}</p>
+                      <p><strong>Development Mode:</strong> {zone.development_mode ? "Enabled" : "Disabled"}</p>
+                    </AccordionItem>
+                  </Accordion>
+                </Column>
+              ))}
+            </Row>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </Grid>
   );
 };
 

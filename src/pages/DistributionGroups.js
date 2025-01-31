@@ -1,20 +1,22 @@
 import React from "react";
-import { Container, Typography, Box } from '@mui/joy';
+import { Grid, Row, Column, ContentSwitcher, Switch, Button, TextInput, Form, FormGroup, InlineNotification } from '@carbon/react';
 import AliasManager from "../components/AliasManager";
 
 const DistributionGroups = () => {
   return (
-    <Container sx={{ py: 5 }}>
-      <Typography level="h2" component="h2" gutterBottom>
-        Distribution Group Manager
-      </Typography>
-      <Typography level="body1" gutterBottom>
-        Manage internal email distribution groups efficiently.
-      </Typography>
-      <Box>
-        <AliasManager />
-      </Box>
-    </Container>
+    <Grid>
+      <Row>
+        <Column>
+          <h2>Distribution Group Manager</h2>
+          <p>Manage internal email distribution groups efficiently.</p>
+        </Column>
+      </Row>
+      <Row>
+        <Column>
+          <AliasManager />
+        </Column>
+      </Row>
+    </Grid>
   );
 };
 

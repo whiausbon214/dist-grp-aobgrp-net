@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Grid, Card, CardContent, Typography, Button } from '@mui/joy';
+import { Grid, Row, Column, Button, Card, CardContent, CardFooter, CardHeader } from '@carbon/react';
 import { Link } from 'react-router-dom';
 import { FiMail, FiCloud } from 'react-icons/fi';
 import { SiMailchimp } from 'react-icons/si';
@@ -31,34 +31,34 @@ const Dashboard = () => {
   ];
 
   return (
-    <Container>
-      <Typography level="h2" component="h2" gutterBottom>
-        AOBG Internal Tools Dashboard
-      </Typography>
-      <Grid container spacing={2}>
+    <Grid>
+      <Row>
+        <Column>
+          <h2>AOBG Internal Tools Dashboard</h2>
+        </Column>
+      </Row>
+      <Row>
         {sections.map((section, index) => (
-          <Grid key={index} item xs={12} sm={6} md={4}>
-            <Card variant="outlined" sx={{ height: '100%', bgcolor: section.color }}>
+          <Column key={index} sm={4}>
+            <Card>
+              <CardHeader>
+                <h3>{section.title}</h3>
+              </CardHeader>
               <CardContent>
-                <Box display="flex" justifyContent="space-between" alignItems="center">
-                  <Box>
-                    <Typography level="h5" component="h3">
-                      {section.title}
-                    </Typography>
-                    <Typography level="body2">{section.description}</Typography>
-                    <Button component={Link} to={section.link} variant="contained" color="primary">
-                      Go to {section.title}
-                    </Button>
-                  </Box>
-                  <Box>{section.icon}</Box>
-                </Box>
+                <p>{section.description}</p>
+                {section.icon}
               </CardContent>
+              <CardFooter>
+                <Button as={Link} to={section.link} kind="primary">
+                  Go to {section.title}
+                </Button>
+              </CardFooter>
             </Card>
-          </Grid>
+          </Column>
         ))}
-      </Grid>
-    </Container>
+      </Row>
+    </Grid>
   );
-}
+};
 
 export default Dashboard;
