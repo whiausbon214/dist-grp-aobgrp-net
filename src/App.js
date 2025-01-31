@@ -4,6 +4,7 @@ import AppNavbar from "./components/Navbar";
 import Login from "./components/Login";
 import Dashboard from "./pages/Dashboard";
 import DistributionGroups from "./pages/DistributionGroups"; 
+import CloudStatus from "./pages/CloudStatus";
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
