@@ -30,28 +30,6 @@ const Dashboard = () => {
     }
   ];
 
-  const quickLinks = [
-    { name: "E123", url: "https://aobgenrollment.com/manage/", icon: <FiExternalLink size={48} /> },
-    { name: "ACA Resource Center", url: "https://aobgagents.com/aca/", icon: <FiExternalLink size={48} /> },
-    { name: "Contracting Portal", url: "https://agents.aobgrp.com/manage", icon: <FiExternalLink size={48} /> },
-    { name: "HealthSherpa", url: "https://healthsherpa.com/sessions/new", icon: <FiExternalLink size={48} /> },
-    { name: "TLD", url: "https://aobg.tldcrm.com/adg/index?limit=100&page=1", icon: <FiExternalLink size={48} /> },
-    { name: "SmartSheet", url: "https://app.smartsheet.com/", icon: <FiExternalLink size={48} /> },
-    { name: "Sircon", url: "https://www.sircon.com/login.jsp?accountType=business", icon: <FiExternalLink size={48} /> },
-    { name: "BIG Background Checks", url: "https://v2.mybig.com/dashboard/page/home", icon: <FiExternalLink size={48} /> },
-    { name: "Vector One", url: "https://debit-check.com/login", icon: <FiExternalLink size={48} /> },
-    { name: "Adobe Sign", url: "https://gallagher.na1.adobesign.com/account/homeJS", icon: <FiExternalLink size={48} /> },
-    { name: "Zendesk", url: "https://aobg.zendesk.com/agent/", icon: <FiExternalLink size={48} /> }
-  ];
-
-  const adminQuickLinks = [
-    { name: "Digital Ocean", url: "https://cloud.digitalocean.com/projects", icon: <FiExternalLink size={48} /> },
-    { name: "Cloudflare", url: "https://dash.cloudflare.com/", icon: <FiExternalLink size={48} /> },
-    { name: "aobgagents.com Admin", url: "https://aobgagents.com/manager/", icon: <FiExternalLink size={48} /> },
-    { name: "BeePro", url: "https://pro.beefree.io/", icon: <FiExternalLink size={48} /> },
-    { name: "Short.io", url: "https://app.short.io/users/dashboard/links", icon: <FiExternalLink size={48} /> }
-  ];
-
   return (
     <Container className="py-5">
       <h2>AOBG Internal Tools Dashboard</h2>

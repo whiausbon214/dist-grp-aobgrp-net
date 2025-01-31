@@ -32,7 +32,7 @@ const AliasManager = () => {
 
   useEffect(() => {
     fetchAliases();
-  }, []);
+  }, [fetchAliases]);
 
   // Open the Create Alias Modal
   const openCreateModal = () => {
