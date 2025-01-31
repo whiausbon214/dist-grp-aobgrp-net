@@ -16,7 +16,7 @@ const CloudStatus = () => {
   const fetchData = async () => {
     setLoading(true);
     setError(null);
-    const DO_API_TOKEN = process.env.REACT_APP_DO_API_TOKEN;
+    const DO_API_TOKEN = ;
     const headers = { 'Authorization': `Bearer ${DO_API_TOKEN}` };
 
     try {
