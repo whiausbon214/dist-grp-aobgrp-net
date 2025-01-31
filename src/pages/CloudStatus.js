@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Row, Column, Button, Tabs, Tab, TabList, TabPanels, TabPanel, DataTable, Table, TableHead, TableRow, TableHeader, TableBody, TableCell, 
-  InlineNotification, Accordion, AccordionItem } from '@carbon/react';
+import { Container, Row, Col, Button, Tabs, Tab, Table, Accordion, Card } from 'react-bootstrap';
 import axios from 'axios';
-import { FaServer, FaDatabase, FaCloud, FaMoneyBillWave, FaGlobe, FaRedo, FaChevronDown, FaWater } from 'react-icons/fa';
+import { FaServer, FaDatabase, FaCloud, FaMoneyBillWave, FaGlobe, FaRedo, FaWater } from 'react-icons/fa';
 import { SiCloudflare } from 'react-icons/si';
 
 const CloudStatus = () => {
@@ -16,7 +15,7 @@ const CloudStatus = () => {
   const [error, setError] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [expandedDroplet, setExpandedDroplet] = useState(null);
-  const [selectedTab, setSelectedTab] = useState(0);
+  const [selectedTab, setSelectedTab] = useState('digital-ocean');
 
   useEffect(() => {
     fetchData();
@@ -104,167 +103,191 @@ const CloudStatus = () => {
     setExpandedDroplet(expandedDroplet === dropletId ? null : dropletId);
   };
 
-  const handleTabChange = (index) => {
-    setSelectedTab(index);
+  const handleTabChange = (key) => {
+    setSelectedTab(key);
   };
 
   if (loading) {
     return (
-      <Grid>
+      <Container>
         <Row>
-          <Column>
-            <InlineNotification kind="info" title="Loading" subtitle="Fetching data..." />
-          </Column>
+          <Col>
+            <div className="alert alert-info">Loading... Fetching data...</div>
+          </Col>
         </Row>
-      </Grid>
+      </Container>
     );
   }
 
   if (error) {
     return (
-      <Grid>
+      <Container>
         <Row>
-          <Column>
-            <InlineNotification kind="error" title="Error" subtitle={error} />
-          </Column>
+          <Col>
+            <div className="alert alert-danger">{error}</div>
+          </Col>
         </Row>
-      </Grid>
+      </Container>
     );
   }
 
   return (
-    <Grid>
-      <Row>
-        <Column>
+    <Container>
+      <Row className="my-4">
+        <Col>
           <h2>Cloud Resources Status</h2>
-          <Button onClick={fetchData} renderIcon={FaRedo}>
-            Refresh Now
+          <Button onClick={fetchData} variant="primary">
+            <FaRedo /> Refresh Now
           </Button>
           <p>Last updated: {formatTimeAgo(lastUpdated)}</p>
-        </Column>
+        </Col>
       </Row>
 
-      <Tabs selected={selectedTab} onSelectionChange={handleTabChange}>
-        <TabList aria-label="Cloud Resources">
-          <Tab>
-            <FaWater /> Digital Ocean
-          </Tab>
-          <Tab>
-            <SiCloudflare /> Cloudflare
-          </Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel>
-            <h3><FaServer /> Droplets</h3>
-            <Row>
-              {droplets.map((droplet, index) => (
-                <Column key={index} sm={4}>
-                  <Accordion>
-                    <AccordionItem title={`${droplet.name} (${droplet.status})`} open={expandedDroplet === droplet.id} onClick={() => handleAccordionToggle(droplet.id)}>
-                      <p><strong>Status:</strong> {droplet.status}</p>
-                      <p><strong>IP Address:</strong> {droplet.networks.v4[0]?.ip_address || "N/A"}</p>
-                      <p><strong>Region:</strong> {droplet.region.name}</p>
-                      <DataTable rows={Object.entries(droplet.metadata).map(([key, value]) => ({ id: key, key, value }))} headers={[{ key: 'key', header: 'Key' }, { key: 'value', header: 'Value' }]}>
-                        {({ rows, headers, getHeaderProps, getRowProps }) => (
-                          <Table>
-                            <TableHead>
-                              <TableRow>
-                                {headers.map(header => (
-                                  <TableHeader {...getHeaderProps({ header })}>
-                                    {header.header}
-                                  </TableHeader>
-                                ))}
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {rows.map(row => (
-                                <TableRow {...getRowProps({ row })}>
-                                  {row.cells.map(cell => (
-                                    <TableCell key={cell.id}>{cell.value}</TableCell>
-                                  ))}
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        )}
-                      </DataTable>
-                    </AccordionItem>
-                  </Accordion>
-                </Column>
-              ))}
-            </Row>
+      <Tabs activeKey={selectedTab} onSelect={handleTabChange}>
+        <Tab eventKey="digital-ocean" title={<><FaWater /> Digital Ocean</>}>
+          <h3><FaServer /> Droplets</h3>
+          <Row>
+            {droplets.map((droplet, index) => (
+              <Col key={index} sm={4}>
+                <Accordion>
+                  <Card>
+                    <Accordion.Toggle as={Card.Header} eventKey={droplet.id} onClick={() => handleAccordionToggle(droplet.id)}>
+                      {droplet.name} ({droplet.status})
+                    </Accordion.Toggle>
+                    <Accordion.Collapse eventKey={droplet.id}>
+                      <Card.Body>
+                        <p><strong>Status:</strong> {droplet.status}</p>
+                        <p><strong>IP Address:</strong> {droplet.networks.v4[0]?.ip_address || "N/A"}</p>
+                        <p><strong>Region:</strong> {droplet.region.name}</p>
+                        <Table striped bordered hover>
+                          <thead>
+                            <tr>
+                              <th>Key</th>
+                              <th>Value</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {Object.entries(droplet.metadata).map(([key, value]) => (
+                              <tr key={key}>
+                                <td>{key}</td>
+                                <td>{value}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </Table>
+                      </Card.Body>
+                    </Accordion.Collapse>
+                  </Card>
+                </Accordion>
+              </Col>
+            ))}
+          </Row>
 
-            <h3><FaCloud /> Spaces</h3>
-            <Row>
-              {spaces.map((space, index) => (
-                <Column key={index} sm={4}>
-                  <Accordion>
-                    <AccordionItem title={space.name}>
-                      <p><strong>Region:</strong> {space.region}</p>
-                    </AccordionItem>
-                  </Accordion>
-                </Column>
-              ))}
-            </Row>
+          <h3><FaCloud /> Spaces</h3>
+          <Row>
+            {spaces.map((space, index) => (
+              <Col key={index} sm={4}>
+                <Accordion>
+                  <Card>
+                    <Accordion.Toggle as={Card.Header} eventKey={space.name}>
+                      {space.name}
+                    </Accordion.Toggle>
+                    <Accordion.Collapse eventKey={space.name}>
+                      <Card.Body>
+                        <p><strong>Region:</strong> {space.region}</p>
+                      </Card.Body>
+                    </Accordion.Collapse>
+                  </Card>
+                </Accordion>
+              </Col>
+            ))}
+          </Row>
 
-            <h3><FaDatabase /> Databases</h3>
-            <Row>
-              {databases.map((database, index) => (
-                <Column key={index} sm={4}>
-                  <Accordion>
-                    <AccordionItem title={`${database.name} (${database.status})`}>
-                      <p><strong>Status:</strong> {database.status}</p>
-                      <p><strong>Engine:</strong> {database.engine}</p>
-                      <p><strong>Region:</strong> {database.region}</p>
-                    </AccordionItem>
-                  </Accordion>
-                </Column>
-              ))}
-            </Row>
+          <h3><FaDatabase /> Databases</h3>
+          <Row>
+            {databases.map((database, index) => (
+              <Col key={index} sm={4}>
+                <Accordion>
+                  <Card>
+                    <Accordion.Toggle as={Card.Header} eventKey={database.name}>
+                      {database.name} ({database.status})
+                    </Accordion.Toggle>
+                    <Accordion.Collapse eventKey={database.name}>
+                      <Card.Body>
+                        <p><strong>Status:</strong> {database.status}</p>
+                        <p><strong>Engine:</strong> {database.engine}</p>
+                        <p><strong>Region:</strong> {database.region}</p>
+                      </Card.Body>
+                    </Accordion.Collapse>
+                  </Card>
+                </Accordion>
+              </Col>
+            ))}
+          </Row>
 
-            <h3><FaGlobe /> CDN Endpoints</h3>
-            <Row>
-              {cdnEndpoints.map((cdn, index) => (
-                <Column key={index} sm={4}>
-                  <Accordion>
-                    <AccordionItem title={cdn.origin}>
-                      <p><strong>Endpoint:</strong> {cdn.endpoint}</p>
-                    </AccordionItem>
-                  </Accordion>
-                </Column>
-              ))}
-            </Row>
+          <h3><FaGlobe /> CDN Endpoints</h3>
+          <Row>
+            {cdnEndpoints.map((cdn, index) => (
+              <Col key={index} sm={4}>
+                <Accordion>
+                  <Card>
+                    <Accordion.Toggle as={Card.Header} eventKey={cdn.origin}>
+                      {cdn.origin}
+                    </Accordion.Toggle>
+                    <Accordion.Collapse eventKey={cdn.origin}>
+                      <Card.Body>
+                        <p><strong>Endpoint:</strong> {cdn.endpoint}</p>
+                      </Card.Body>
+                    </Accordion.Collapse>
+                  </Card>
+                </Accordion>
+              </Col>
+            ))}
+          </Row>
 
-            <h3><FaMoneyBillWave /> Account Balance</h3>
-            {billing ? (
-              <Accordion>
-                <AccordionItem title="Account Balance">
-                  <p><strong>Account Balance:</strong> ${billing.account_balance}</p>
-                </AccordionItem>
-              </Accordion>
-            ) : (
-              <p>No billing data available.</p>
-            )}
-          </TabPanel>
-          <TabPanel>
-            <h3><FaGlobe /> Cloudflare Metrics</h3>
-            <Row>
-              {cloudflareMetrics.map((zone, index) => (
-                <Column key={index} sm={4}>
-                  <Accordion>
-                    <AccordionItem title={zone.name}>
-                      <p><strong>Status:</strong> {zone.status}</p>
-                      <p><strong>Plan:</strong> {zone.plan.name}</p>
-                      <p><strong>Development Mode:</strong> {zone.development_mode ? "Enabled" : "Disabled"}</p>
-                    </AccordionItem>
-                  </Accordion>
-                </Column>
-              ))}
-            </Row>
-          </TabPanel>
-        </TabPanels>
+          <h3><FaMoneyBillWave /> Account Balance</h3>
+          {billing ? (
+            <Accordion>
+              <Card>
+                <Accordion.Toggle as={Card.Header} eventKey="account-balance">
+                  Account Balance
+                </Accordion.Toggle>
+                <Accordion.Collapse eventKey="account-balance">
+                  <Card.Body>
+                    <p><strong>Account Balance:</strong> ${billing.account_balance}</p>
+                  </Card.Body>
+                </Accordion.Collapse>
+              </Card>
+            </Accordion>
+          ) : (
+            <p>No billing data available.</p>
+          )}
+        </Tab>
+        <Tab eventKey="cloudflare" title={<><SiCloudflare /> Cloudflare</>}>
+          <h3><FaGlobe /> Cloudflare Metrics</h3>
+          <Row>
+            {cloudflareMetrics.map((zone, index) => (
+              <Col key={index} sm={4}>
+                <Accordion>
+                  <Card>
+                    <Accordion.Toggle as={Card.Header} eventKey={zone.name}>
+                      {zone.name}
+                    </Accordion.Toggle>
+                    <Accordion.Collapse eventKey={zone.name}>
+                      <Card.Body>
+                        <p><strong>Status:</strong> {zone.status}</p>
+                        <p><strong>Plan:</strong> {zone.plan.name}</p>
+                        <p><strong>Development Mode:</strong> {zone.development_mode ? "Enabled" : "Disabled"}</p>
+                      </Card.Body>
+                    </Accordion.Collapse>
+                  </Card>
+                </Accordion>
+              </Col>
+            ))}
+          </Row>
+        </Tab>
       </Tabs>
-    </Grid>
+    </Container>
   );
 };
 

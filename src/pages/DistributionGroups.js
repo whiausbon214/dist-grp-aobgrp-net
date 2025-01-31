@@ -1,22 +1,22 @@
 import React from "react";
-import { Grid, Row, Column, ContentSwitcher, Switch, Button, TextInput, Form, FormGroup, InlineNotification } from '@carbon/react';
+import { Container, Row, Col, Button } from "react-bootstrap";
 import AliasManager from "../components/AliasManager";
 
 const DistributionGroups = () => {
   return (
-    <Grid>
-      <Row>
-        <Column>
+    <Container>
+      <Row className="my-4">
+        <Col>
           <h2>Distribution Group Manager</h2>
           <p>Manage internal email distribution groups efficiently.</p>
-        </Column>
+        </Col>
       </Row>
       <Row>
-        <Column>
+        <Col>
           <AliasManager />
-        </Column>
+        </Col>
       </Row>
-    </Grid>
+    </Container>
   );
 };
 

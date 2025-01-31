@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Row, Column, Button, Card, CardContent, CardFooter, CardHeader } from '@carbon/react';
+import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { FiMail, FiCloud } from 'react-icons/fi';
 import { SiMailchimp } from 'react-icons/si';
@@ -31,33 +31,33 @@ const Dashboard = () => {
   ];
 
   return (
-    <Grid>
-      <Row>
-        <Column>
+    <Container>
+      <Row className="my-4">
+        <Col>
           <h2>AOBG Internal Tools Dashboard</h2>
-        </Column>
+        </Col>
       </Row>
       <Row>
         {sections.map((section, index) => (
-          <Column key={index} sm={4}>
-            <Card>
-              <CardHeader>
+          <Col key={index} sm={4}>
+            <Card className="mb-4">
+              <Card.Header>
                 <h3>{section.title}</h3>
-              </CardHeader>
-              <CardContent>
-                <p>{section.description}</p>
+              </Card.Header>
+              <Card.Body>
+                <Card.Text>{section.description}</Card.Text>
                 {section.icon}
-              </CardContent>
-              <CardFooter>
-                <Button as={Link} to={section.link} kind="primary">
+              </Card.Body>
+              <Card.Footer>
+                <Button as={Link} to={section.link} variant="primary">
                   Go to {section.title}
                 </Button>
-              </CardFooter>
+              </Card.Footer>
             </Card>
-          </Column>
+          </Col>
         ))}
       </Row>
-    </Grid>
+    </Container>
   );
 };
 

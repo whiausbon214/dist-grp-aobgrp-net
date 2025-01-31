@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { Button, DataTable, Modal, TextInput, Form, FormGroup, InlineNotification, Grid, Row, Column } from '@carbon/react';
-import { Edit16, TrashCan16, WarningAltFilled16 } from '@carbon/icons-react';
+import { Container, Button, Table, Modal, Form, Row, Col } from 'react-bootstrap';
+import { FiEdit, FiTrash2, FiAlertTriangle } from 'react-icons/fi';
 
 const AliasManager = () => {
   const [aliases, setAliases] = useState([]);
@@ -35,144 +35,141 @@ const AliasManager = () => {
   }, [fetchAliases]);
 
   // Filter out the alias 'commissions@aobgrp.com'
-  const filteredAliases = aliases.filter(alias => alias.name !== '*');
+  const filteredAliases = aliases.filter(alias => alias.name !== 'commissions@aobgrp.com');
 
   return (
-    <Grid>
-      <Row>
-        <Column>
-          <Button onClick={() => setShowCreateModal(true)}>Create Alias</Button>
-        </Column>
-      </Row>
-      <Row>
-        <Column>
-          <DataTable
-            rows={filteredAliases}
-            headers={[
-              { key: 'name', header: 'Alias' },
-              { key: 'recipients', header: 'Recipients' },
-              { key: 'actions', header: 'Actions' }
-            ]}
-            render={({ rows, headers, getHeaderProps, getRowProps }) => (
-              <TableContainer title="Aliases">
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      {headers.map(header => (
-                        <TableHeader {...getHeaderProps({ header })}>
-                          {header.header}
-                        </TableHeader>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map(row => (
-                      <TableRow {...getRowProps({ row })}>
-                        {row.cells.map(cell => (
-                          <TableCell key={cell.id}>{cell.value}</TableCell>
-                        ))}
-                        <TableCell>
-                          <Button
-                            kind="ghost"
-                            renderIcon={Edit16}
-                            onClick={() => { setSelectedAlias(row); setShowEditModal(true); }}
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            kind="danger--ghost"
-                            renderIcon={TrashCan16}
-                            onClick={() => { setSelectedAlias(row); setShowDeleteModal(true); }}
-                          >
-                            Delete
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            )}
-          />
-        </Column>
-      </Row>
+    <Container>
+      <Button variant="primary" onClick={() => setShowCreateModal(true)}>
+        Create Alias
+      </Button>
+      <Table striped bordered hover className="mt-3">
+        <thead>
+          <tr>
+            <th>Alias</th>
+            <th>Recipients</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredAliases.map((alias) => (
+            <tr key={alias.id}>
+              <td>{alias.name}</td>
+              <td>{alias.recipients.join(", ")}</td>
+              <td>
+                <Button variant="outline-primary" onClick={() => { setSelectedAlias(alias); setShowEditModal(true); }}>
+                  <FiEdit />
+                </Button>
+                <Button variant="outline-danger" onClick={() => { setSelectedAlias(alias); setShowDeleteModal(true); }}>
+                  <FiTrash2 />
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
 
-      <Modal open={showCreateModal} onRequestClose={() => setShowCreateModal(false)} modalHeading="Create Alias">
-        <Form>
-          <FormGroup legendText="">
-            <TextInput
-              id="alias-name"
-              labelText="Alias Name"
-              value={aliasName}
-              onChange={(e) => setAliasName(e.target.value)}
-            />
-            <FormGroup legendText="Recipients">
+      <Modal show={showCreateModal} onHide={() => setShowCreateModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Create Alias</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="aliasName">
+              <Form.Label>Alias Name</Form.Label>
+              <Form.Control
+                type="text"
+                value={aliasName}
+                onChange={(e) => setAliasName(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group controlId="recipients">
+              <Form.Label>Recipients</Form.Label>
               {recipients.map((recipient, index) => (
-                <TextInput
+                <Form.Control
                   key={index}
-                  id={`recipient-${index}`}
-                  labelText={`Recipient ${index + 1}`}
+                  type="text"
                   value={recipient}
                   onChange={(e) => {
                     const newRecipients = [...recipients];
                     newRecipients[index] = e.target.value;
                     setRecipients(newRecipients);
                   }}
+                  className="mb-2"
                 />
               ))}
-            </FormGroup>
-          </FormGroup>
-          <Button onClick={() => { /* handle create alias */ }}>Create</Button>
-        </Form>
+            </Form.Group>
+            <Button variant="primary" onClick={() => { /* handle create alias */ }}>
+              Create
+            </Button>
+          </Form>
+        </Modal.Body>
       </Modal>
 
-      <Modal open={showEditModal} onRequestClose={() => setShowEditModal(false)} modalHeading="Edit Alias">
-        <Form>
-          <FormGroup legendText="">
-            <TextInput
-              id="alias-name"
-              labelText="Alias Name"
-              value={aliasName}
-              onChange={(e) => setAliasName(e.target.value)}
-            />
-            <FormGroup legendText="Recipients">
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Alias</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="aliasName">
+              <Form.Label>Alias Name</Form.Label>
+              <Form.Control
+                type="text"
+                value={aliasName}
+                onChange={(e) => setAliasName(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group controlId="recipients">
+              <Form.Label>Recipients</Form.Label>
               {recipients.map((recipient, index) => (
-                <TextInput
+                <Form.Control
                   key={index}
-                  id={`recipient-${index}`}
-                  labelText={`Recipient ${index + 1}`}
+                  type="text"
                   value={recipient}
                   onChange={(e) => {
                     const newRecipients = [...recipients];
                     newRecipients[index] = e.target.value;
                     setRecipients(newRecipients);
                   }}
+                  className="mb-2"
                 />
               ))}
-            </FormGroup>
-          </FormGroup>
-          <Button onClick={() => { /* handle edit alias */ }}>Save</Button>
-        </Form>
+            </Form.Group>
+            <Button variant="primary" onClick={() => { /* handle edit alias */ }}>
+              Save
+            </Button>
+          </Form>
+        </Modal.Body>
       </Modal>
 
-      <Modal open={showDeleteModal} onRequestClose={() => setShowDeleteModal(false)} modalHeading="Confirm Deletion">
-        <InlineNotification
-          kind="error"
-          title="Confirm Deletion"
-          subtitle="This action is irreversible. Once deleted, the alias cannot be recovered."
-          hideCloseButton
-        />
-        <TextInput
-          id="confirm-password"
-          labelText="Enter Password to Confirm"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Button kind="secondary" onClick={() => setShowDeleteModal(false)}>Cancel</Button>
-        <Button kind="danger" onClick={deleteAlias}>Confirm Delete</Button>
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p className="text-danger">
+            <FiAlertTriangle /> This action is <strong>irreversible</strong>. Once deleted, the alias cannot be recovered.
+          </p>
+          <Form.Group controlId="confirmPassword">
+            <Form.Label>Enter Password to Confirm</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Enter app password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={deleteAlias}>
+            Confirm Delete
+          </Button>
+        </Modal.Footer>
       </Modal>
-    </Grid>
+    </Container>
   );
 };
 
