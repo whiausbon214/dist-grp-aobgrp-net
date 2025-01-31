@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { Container, Button, Table, Modal, Form } from 'react-bootstrap';
+import { Container, Button, Table, Modal, Form, Row, Col } from 'react-bootstrap';
 import { FiEdit, FiTrash2, FiAlertTriangle } from 'react-icons/fi';
 
 const AliasManager = () => {
@@ -51,35 +51,44 @@ const AliasManager = () => {
   };
 
   return (
-    <Container>
-      <Button variant="primary" onClick={() => setShowCreateModal(true)}>
-        Create Alias
-      </Button>
-      <Table striped bordered hover className="mt-3">
-        <thead>
-          <tr>
-            <th>Alias</th>
-            <th>Recipients</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredAliases.map((alias) => (
-            <tr key={alias.id}>
-              <td>{alias.name}</td>
-              <td>{alias.recipients.join(", ")}</td>
-              <td>
-                <Button variant="outline-primary" onClick={() => { setSelectedAlias(alias); setShowEditModal(true); }}>
-                  <FiEdit />
-                </Button>
-                <Button variant="outline-danger" onClick={() => { setSelectedAlias(alias); setShowDeleteModal(true); }}>
-                  <FiTrash2 />
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+    <Container fluid className="p-4 bg-light">
+      <Row className="mb-4">
+        <Col>
+          <h2 className="text-center">Alias Manager</h2>
+          <Button variant="primary" onClick={() => setShowCreateModal(true)} className="mb-3">
+            Create Alias
+          </Button>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <Table striped bordered hover responsive className="bg-white">
+            <thead className="thead-dark">
+              <tr>
+                <th>Alias</th>
+                <th>Recipients</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredAliases.map((alias) => (
+                <tr key={alias.id}>
+                  <td>{alias.name}</td>
+                  <td>{alias.recipients.join(", ")}</td>
+                  <td>
+                    <Button variant="outline-primary" size="sm" onClick={() => { setSelectedAlias(alias); setShowEditModal(true); }} className="mr-2">
+                      <FiEdit />
+                    </Button>
+                    <Button variant="outline-danger" size="sm" onClick={() => { setSelectedAlias(alias); setShowDeleteModal(true); }}>
+                      <FiTrash2 />
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Col>
+      </Row>
 
       <Modal show={showCreateModal} onHide={() => setShowCreateModal(false)}>
         <Modal.Header closeButton>

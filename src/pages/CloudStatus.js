@@ -116,23 +116,23 @@ const CloudStatus = () => {
   }
 
   return (
-    <Container>
-      <Row className="my-4">
+    <Container fluid className="p-4 bg-light">
+      <Row className="mb-4">
         <Col>
-          <h2>Cloud Resources Status</h2>
-          <Button onClick={fetchData} variant="primary">
+          <h2 className="text-center">Cloud Resources Status</h2>
+          <Button onClick={fetchData} variant="primary" className="mb-3">
             <FaRedo /> Refresh Now
           </Button>
-          <p>Last updated: {formatTimeAgo(lastUpdated)}</p>
+          <p className="text-center">Last updated: {formatTimeAgo(lastUpdated)}</p>
         </Col>
       </Row>
 
-      <Tabs activeKey={selectedTab} onSelect={handleTabChange}>
+      <Tabs activeKey={selectedTab} onSelect={handleTabChange} className="mb-3">
         <Tab eventKey="digital-ocean" title={<><FaWater /> Digital Ocean</>}>
           <h3><FaServer /> Droplets</h3>
           <Row>
             {droplets.map((droplet, index) => (
-              <Col key={index} sm={4}>
+              <Col key={index} sm={12} md={6} lg={4} className="mb-4">
                 <Accordion>
                   <Card>
                     <Accordion.Toggle as={Card.Header} eventKey={droplet.id} onClick={() => handleAccordionToggle(droplet.id)}>
@@ -170,7 +170,7 @@ const CloudStatus = () => {
           <h3><FaCloud /> Spaces</h3>
           <Row>
             {spaces.map((space, index) => (
-              <Col key={index} sm={4}>
+              <Col key={index} sm={12} md={6} lg={4} className="mb-4">
                 <Accordion>
                   <Card>
                     <Accordion.Toggle as={Card.Header} eventKey={space.name}>
@@ -190,7 +190,7 @@ const CloudStatus = () => {
           <h3><FaDatabase /> Databases</h3>
           <Row>
             {databases.map((database, index) => (
-              <Col key={index} sm={4}>
+              <Col key={index} sm={12} md={6} lg={4} className="mb-4">
                 <Accordion>
                   <Card>
                     <Accordion.Toggle as={Card.Header} eventKey={database.name}>
@@ -212,7 +212,7 @@ const CloudStatus = () => {
           <h3><FaGlobe /> CDN Endpoints</h3>
           <Row>
             {cdnEndpoints.map((cdn, index) => (
-              <Col key={index} sm={4}>
+              <Col key={index} sm={12} md={6} lg={4} className="mb-4">
                 <Accordion>
                   <Card>
                     <Accordion.Toggle as={Card.Header} eventKey={cdn.origin}>
@@ -251,7 +251,7 @@ const CloudStatus = () => {
           <h3><FaGlobe /> Cloudflare Metrics</h3>
           <Row>
             {cloudflareMetrics.map((zone, index) => (
-              <Col key={index} sm={4}>
+              <Col key={index} sm={12} md={6} lg={4} className="mb-4">
                 <Accordion>
                   <Card>
                     <Accordion.Toggle as={Card.Header} eventKey={zone.name}>

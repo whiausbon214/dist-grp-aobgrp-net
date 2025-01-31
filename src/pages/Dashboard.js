@@ -31,25 +31,25 @@ const Dashboard = () => {
   ];
 
   return (
-    <Container>
-      <Row className="my-4">
+    <Container fluid className="p-4 bg-light">
+      <Row className="mb-4">
         <Col>
-          <h2>AOBG Internal Tools Dashboard</h2>
+          <h2 className="text-center">AOBG Internal Tools Dashboard</h2>
         </Col>
       </Row>
       <Row>
         {sections.map((section, index) => (
-          <Col key={index} sm={4}>
-            <Card className="mb-4">
-              <Card.Header>
-                <h3>{section.title}</h3>
+          <Col key={index} sm={12} md={6} lg={4} className="mb-4">
+            <Card className={`h-100 border-${section.color}`}>
+              <Card.Header className={`bg-${section.color} text-white`}>
+                <h3 className="mb-0">{section.title}</h3>
               </Card.Header>
-              <Card.Body>
-                <Card.Text>{section.description}</Card.Text>
+              <Card.Body className="d-flex flex-column align-items-center">
                 {section.icon}
+                <Card.Text className="mt-3 text-center">{section.description}</Card.Text>
               </Card.Body>
-              <Card.Footer>
-                <Button as={Link} to={section.link} variant="primary">
+              <Card.Footer className="text-center">
+                <Button as={Link} to={section.link} variant={section.color}>
                   Go to {section.title}
                 </Button>
               </Card.Footer>
