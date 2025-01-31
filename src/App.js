@@ -10,7 +10,7 @@ function App() {
 
   return (
     <Router>
-      <AppNavbar onLogout={() => setAuthenticated(false)} />
+      <AppNavbar onLogout={() => setAuthenticated(false)} isAuthenticated={authenticated} />
       {authenticated ? (
         <Routes>
           <Route path="/" element={<Dashboard />} />
