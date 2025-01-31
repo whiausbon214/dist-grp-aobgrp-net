@@ -69,22 +69,6 @@ const CloudStatus = () => {
     setLoading(false);
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "active":
-      case "running":
-        return "green";
-      case "pending":
-        return "yellow";
-      case "offline":
-      case "error":
-      case "stopped":
-        return "red";
-      default:
-        return "gray";
-    }
-  };
-
   const formatTimeAgo = (date) => {
     if (!date) return '';
     const seconds = Math.floor((new Date() - date) / 1000);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { Container, Button, Table, Modal, Form, Row, Col } from 'react-bootstrap';
+import { Container, Button, Table, Modal, Form } from 'react-bootstrap';
 import { FiEdit, FiTrash2, FiAlertTriangle } from 'react-icons/fi';
 
 const AliasManager = () => {
