@@ -3,8 +3,8 @@ import { Container, Row, Col, Button, Tabs, Tab } from 'react-bootstrap';
 import axios from 'axios';
 import { FaRedo, FaWater, FaGlobe } from 'react-icons/fa';
 import { SiCloudflare } from 'react-icons/si';
-import DigitalOceanTab from './components/DigitalOceanTab';
-import CloudflareTab from './components/CloudflareTab';
+import DigitalOceanTab from '../components/DigitalOceanTab';
+import CloudflareTab from '../components/CloudflareTab';
 
 const CloudStatus = () => {
   const [loading, setLoading] = useState(true);
