@@ -1,39 +1,40 @@
-import { Navbar, Container, Button, Image, Nav } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
-import { FiLogOut, FiMail, FiCloud, FiHome } from "react-icons/fi";
-import { SiMailchimp } from "react-icons/si";
+import { AppBar, Toolbar, IconButton, Typography, Box } from '@mui/joy';
+import { NavLink } from 'react-router-dom';
+import { FiLogOut, FiMail, FiCloud, FiHome } from 'react-icons/fi';
+import { SiMailchimp } from 'react-icons/si';
 
 function AppNavbar({ onLogout }) {
   return (
-    <Navbar bg="dark" variant="dark" className="py-3 shadow-sm">
-      <Container>
-        <Navbar.Brand className="d-flex align-items-center">
-          <Image src="/icon.svg" alt="AOBG" height={40} className="me-2" />
-          AOBG Internal Tools
-        </Navbar.Brand>
-        <Nav className="me-auto">
-          <Nav.Link as={NavLink} to="/" exact className="d-flex flex-column align-items-center" activeClassName="active">
+    <AppBar position="static">
+      <Toolbar>
+        <Box display="flex" alignItems="center" flexGrow={1}>
+          <img src="/icon.svg" alt="AOBG" height={40} style={{ marginRight: '16px' }} />
+          <Typography variant="h6">AOBG Internal Tools</Typography>
+        </Box>
+        <Box display="flex" alignItems="center">
+          <IconButton component={NavLink} to="/" color="inherit">
             <FiHome size={20} />
-            <span>Home</span>
-          </Nav.Link>
-          <Nav.Link as={NavLink} to="/distribution-groups" className="d-flex flex-column align-items-center" activeClassName="active">
+            <Typography variant="caption">Home</Typography>
+          </IconButton>
+          <IconButton component={NavLink} to="/distribution-groups" color="inherit">
             <FiMail size={20} />
-            <span>Dist Groups</span>
-          </Nav.Link>
-          <Nav.Link as={NavLink} to="/mailing-list" className="d-flex flex-column align-items-center" activeClassName="active">
+            <Typography variant="caption">Dist Groups</Typography>
+          </IconButton>
+          <IconButton component={NavLink} to="/mailing-list" color="inherit">
             <SiMailchimp size={20} />
-            <span>Mailing List</span>
-          </Nav.Link>
-          <Nav.Link as={NavLink} to="/cloud-status" className="d-flex flex-column align-items-center" activeClassName="active">
+            <Typography variant="caption">Mailing List</Typography>
+          </IconButton>
+          <IconButton component={NavLink} to="/cloud-status" color="inherit">
             <FiCloud size={20} />
-            <span>Cloud Status</span>
-          </Nav.Link>
-        </Nav>
-        <Button variant="outline-light" onClick={onLogout} className="d-flex align-items-center">
-          <FiLogOut size={20} className="me-2" /> Logout
-        </Button>
-      </Container>
-    </Navbar>
+            <Typography variant="caption">Cloud Status</Typography>
+          </IconButton>
+          <IconButton onClick={onLogout} color="inherit">
+            <FiLogOut size={20} />
+            <Typography variant="caption">Logout</Typography>
+          </IconButton>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 }
 

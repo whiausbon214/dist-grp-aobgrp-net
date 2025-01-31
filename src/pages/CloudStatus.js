@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Spinner, Alert, Button } from 'react-bootstrap';
+import { Container, Grid, Card, CardContent, Typography, CircularProgress, Alert, Button } from '@mui/joy';
 import axios from 'axios';
-import { FaServer, FaDatabase, FaCloud, FaMoneyBillWave, FaGlobe, FaRedo, FaBoxOpen } from 'react-icons/fa';
+import { FaServer, FaDatabase, FaCloud, FaMoneyBillWave, FaGlobe, FaRedo } from 'react-icons/fa';
 
 const CloudStatus = () => {
   const [droplets, setDroplets] = useState([]);
   const [databases, setDatabases] = useState([]);
-  const [apps, setApps] = useState([]);
   const [billing, setBilling] = useState(null);
   const [cdnEndpoints, setCdnEndpoints] = useState([]);
   const [spaces, setSpaces] = useState([]);
@@ -26,10 +25,9 @@ const CloudStatus = () => {
     const spacesHeaders = { 'Authorization': `Bearer ${DO_SPACES_API_TOKEN}` };
 
     try {
-      const [dropletsRes, databasesRes, appsRes, billingRes, cdnRes, spacesRes] = await Promise.allSettled([
+      const [dropletsRes, databasesRes, billingRes, cdnRes, spacesRes] = await Promise.allSettled([
         axios.get('https://api.digitalocean.com/v2/droplets', { headers }),
         axios.get('https://api.digitalocean.com/v2/databases', { headers }),
-        axios.get('https://api.digitalocean.com/v2/apps', { headers }),
         axios.get('https://api.digitalocean.com/v2/customers/my/balance', { headers }),
         axios.get('https://api.digitalocean.com/v2/cdn/endpoints', { headers }),
         axios.get('https://api.digitalocean.com/v2/spaces', { headers: spacesHeaders })
@@ -37,7 +35,6 @@ const CloudStatus = () => {
 
       if (dropletsRes.status === "fulfilled") setDroplets(dropletsRes.value.data.droplets);
       if (databasesRes.status === "fulfilled") setDatabases(databasesRes.value.data.databases);
-      if (appsRes.status === "fulfilled") setApps(appsRes.value.data.apps);
       if (billingRes.status === "fulfilled") setBilling(billingRes.value.data);
       if (cdnRes.status === "fulfilled") setCdnEndpoints(cdnRes.value.data.endpoints);
       if (spacesRes.status === "fulfilled") setSpaces(spacesRes.value.data.spaces);
@@ -53,22 +50,22 @@ const CloudStatus = () => {
     switch (status) {
       case "active":
       case "running":
-        return "text-success";
+        return "success";
       case "pending":
-        return "text-warning";
+        return "warning";
       case "offline":
       case "error":
       case "stopped":
-        return "text-danger";
+        return "danger";
       default:
-        return "text-secondary";
+        return "secondary";
     }
   };
 
   if (loading) {
     return (
       <Container className="py-5 text-center">
-        <Spinner animation="border" />
+        <CircularProgress />
       </Container>
     );
   }
@@ -76,100 +73,118 @@ const CloudStatus = () => {
   if (error) {
     return (
       <Container className="py-5 text-center">
-        <Alert variant="danger">{error}</Alert>
+        <Alert severity="error">{error}</Alert>
       </Container>
     );
   }
 
   return (
     <Container className="py-5">
-      <h2>DigitalOcean Resources Status</h2>
-      {error && <Alert variant="danger">{error}</Alert>}
-      <Button onClick={fetchData} className="mb-4">
+      <Typography level="h2" component="h2" gutterBottom>
+        DigitalOcean Resources Status
+      </Typography>
+      <Button onClick={fetchData} className="mb-4" variant="contained" color="primary">
         <FaRedo /> Refresh Now
       </Button>
 
-      <h3 className="mt-4"><FaServer /> Droplets</h3>
-      <Row className="mt-2">
+      <Typography level="h3" component="h3" gutterBottom>
+        <FaServer /> Droplets
+      </Typography>
+      <Grid container spacing={2}>
         {droplets.map((droplet, index) => (
-          <Col key={index} md={4} className="mb-4">
-            <Card className="h-100 shadow">
-              <Card.Body>
-                <Card.Title>{droplet.name} <span className={getStatusColor(droplet.status)}>●</span></Card.Title>
-                <Card.Text>
+          <Grid key={index} item xs={12} sm={6} md={4}>
+            <Card variant="outlined" sx={{ height: '100%' }}>
+              <CardContent>
+                <Typography level="h5" component="h3">
+                  {droplet.name} <span className={getStatusColor(droplet.status)}>●</span>
+                </Typography>
+                <Typography level="body2">
                   <strong>Status:</strong> {droplet.status}<br />
                   <strong>IP Address:</strong> {droplet.networks.v4[0]?.ip_address || "N/A"}<br />
                   <strong>Region:</strong> {droplet.region.name}
-                </Card.Text>
-              </Card.Body>
+                </Typography>
+              </CardContent>
             </Card>
-          </Col>
+          </Grid>
         ))}
-      </Row>
+      </Grid>
 
-      <h3 className="mt-4"><FaCloud /> Spaces</h3>
-      <Row className="mt-2">
+      <Typography level="h3" component="h3" gutterBottom>
+        <FaCloud /> Spaces
+      </Typography>
+      <Grid container spacing={2}>
         {spaces.map((space, index) => (
-          <Col key={index} md={4} className="mb-4">
-            <Card className="h-100 shadow">
-              <Card.Body>
-                <Card.Title>{space.name}</Card.Title>
-                <Card.Text>
+          <Grid key={index} item xs={12} sm={6} md={4}>
+            <Card variant="outlined" sx={{ height: '100%' }}>
+              <CardContent>
+                <Typography level="h5" component="h3">
+                  {space.name}
+                </Typography>
+                <Typography level="body2">
                   <strong>Region:</strong> {space.region}
-                </Card.Text>
-              </Card.Body>
+                </Typography>
+              </CardContent>
             </Card>
-          </Col>
+          </Grid>
         ))}
-      </Row>
+      </Grid>
 
-      <h3 className="mt-4"><FaDatabase /> Databases</h3>
-      <Row className="mt-2">
+      <Typography level="h3" component="h3" gutterBottom>
+        <FaDatabase /> Databases
+      </Typography>
+      <Grid container spacing={2}>
         {databases.map((database, index) => (
-          <Col key={index} md={4} className="mb-4">
-            <Card className="h-100 shadow">
-              <Card.Body>
-                <Card.Title>{database.name} <span className={getStatusColor(database.status)}>●</span></Card.Title>
-                <Card.Text>
+          <Grid key={index} item xs={12} sm={6} md={4}>
+            <Card variant="outlined" sx={{ height: '100%' }}>
+              <CardContent>
+                <Typography level="h5" component="h3">
+                  {database.name} <span className={getStatusColor(database.status)}>●</span>
+                </Typography>
+                <Typography level="body2">
                   <strong>Status:</strong> {database.status}<br />
                   <strong>Engine:</strong> {database.engine}<br />
                   <strong>Region:</strong> {database.region}
-                </Card.Text>
-              </Card.Body>
+                </Typography>
+              </CardContent>
             </Card>
-          </Col>
+          </Grid>
         ))}
-      </Row>
+      </Grid>
 
-      <h3 className="mt-4"><FaGlobe /> CDN Endpoints</h3>
-      <Row className="mt-2">
+      <Typography level="h3" component="h3" gutterBottom>
+        <FaGlobe /> CDN Endpoints
+      </Typography>
+      <Grid container spacing={2}>
         {cdnEndpoints.map((cdn, index) => (
-          <Col key={index} md={4} className="mb-4">
-            <Card className="h-100 shadow">
-              <Card.Body>
-                <Card.Title>{cdn.origin}</Card.Title>
-                <Card.Text>
+          <Grid key={index} item xs={12} sm={6} md={4}>
+            <Card variant="outlined" sx={{ height: '100%' }}>
+              <CardContent>
+                <Typography level="h5" component="h3">
+                  {cdn.origin}
+                </Typography>
+                <Typography level="body2">
                   <strong>Endpoint:</strong> {cdn.endpoint}
-                </Card.Text>
-              </Card.Body>
+                </Typography>
+              </CardContent>
             </Card>
-          </Col>
+          </Grid>
         ))}
-      </Row>
+      </Grid>
 
-      <h3 className="mt-4"><FaMoneyBillWave /> Account Balance</h3>
+      <Typography level="h3" component="h3" gutterBottom>
+        <FaMoneyBillWave /> Account Balance
+      </Typography>
       {billing ? (
-        <Card className="mb-4 shadow">
-          <Card.Body>
-            <Card.Text>
+        <Card variant="outlined" sx={{ height: '100%' }}>
+          <CardContent>
+            <Typography level="body2">
               <strong>Account Balance:</strong> ${billing.account_balance}
-            </Card.Text>
-          </Card.Body>
+            </Typography>
+          </CardContent>
         </Card>
       ) : (
-        <p>No billing data available.</p>
+        <Typography level="body2">No billing data available.</Typography>
       )}
-
     </Container>
   );
 };

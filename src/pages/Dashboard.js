@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import { Container, Grid, Card, CardContent, Typography, Button } from '@mui/joy';
 import { Link } from 'react-router-dom';
 import { FiMail, FiCloud } from 'react-icons/fi';
 import { SiMailchimp } from 'react-icons/si';
@@ -31,28 +31,32 @@ const Dashboard = () => {
   ];
 
   return (
-    <Container className="py-5">
-      <h2>AOBG Internal Tools Dashboard</h2>
-
-      {/* Feature Sections */}
-      <Row className="mt-4">
+    <Container>
+      <Typography level="h2" component="h2" gutterBottom>
+        AOBG Internal Tools Dashboard
+      </Typography>
+      <Grid container spacing={2}>
         {sections.map((section, index) => (
-          <Col key={index} md={4} className="mb-4">
-            <Card bg={section.color} text={section.textColor || "white"} className="h-100 shadow">
-              <Card.Body className="d-flex justify-content-between align-items-center">
-                <div>
-                  <Card.Title>{section.title}</Card.Title>
-                  <Card.Text>{section.description}</Card.Text>
-                  <Link to={section.link}>
-                    <Button variant="light">Go to {section.title}</Button>
-                  </Link>
-                </div>
-                <div>{section.icon}</div>
-              </Card.Body>
+          <Grid key={index} item xs={12} sm={6} md={4}>
+            <Card variant="outlined" sx={{ height: '100%', bgcolor: section.color }}>
+              <CardContent>
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                  <Box>
+                    <Typography level="h5" component="h3">
+                      {section.title}
+                    </Typography>
+                    <Typography level="body2">{section.description}</Typography>
+                    <Button component={Link} to={section.link} variant="contained" color="primary">
+                      Go to {section.title}
+                    </Button>
+                  </Box>
+                  <Box>{section.icon}</Box>
+                </Box>
+              </CardContent>
             </Card>
-          </Col>
+          </Grid>
         ))}
-      </Row>
+      </Grid>
     </Container>
   );
 }
