@@ -9,9 +9,12 @@ const CloudStatus = () => {
   const [databases, setDatabases] = useState([]);
   const [billing, setBilling] = useState(null);
   const [cdnEndpoints, setCdnEndpoints] = useState([]);
+const [apps, setApps] = useState([]);
+const [billingBalance, setBillingBalance] = useState(null);
   const [spaces, setSpaces] = useState([]);
   const [cloudflareMetrics, setCloudflareMetrics] = useState([]);
   const [loading, setLoading] = useState(true);
+const [expandedApp, setExpandedApp] = useState(null);
   const [error, setError] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [expandedDroplet, setExpandedDroplet] = useState(null);
@@ -29,11 +32,12 @@ const CloudStatus = () => {
     const CF_API_TOKEN = process.env.REACT_APP_CF_API_TOKEN;
     const CF_ACCOUNT_ID = process.env.REACT_APP_CF_ACCOUNT_ID;
     const headers = { 'Authorization': `Bearer ${DO_API_TOKEN}` };
+const billingHeaders = { 'Authorization': `Bearer ${DO_API_TOKEN}` };
     const spacesHeaders = { 'Authorization': `Bearer ${DO_SPACES_API_TOKEN}` };
     const cfHeaders = { 'Authorization': `Bearer ${CF_API_TOKEN}` };
 
     try {
-      const [dropletsRes, databasesRes, billingRes, cdnRes, spacesRes, cloudflareRes] = await Promise.allSettled([
+      const [dropletsRes, databasesRes, billingRes, cdnRes, spacesRes, cloudflareRes, appsRes, billingBalanceRes] = await Promise.allSettled([
         axios.get('https://api.digitalocean.com/v2/droplets', { headers }),
         axios.get('https://api.digitalocean.com/v2/databases', { headers }),
         axios.get('https://api.digitalocean.com/v2/customers/my/balance', { headers }),
@@ -54,7 +58,10 @@ const CloudStatus = () => {
       if (billingRes.status === "fulfilled") setBilling(billingRes.value.data);
       if (cdnRes.status === "fulfilled") setCdnEndpoints(cdnRes.value.data.endpoints);
       if (spacesRes.status === "fulfilled") setSpaces(spacesRes.value.data.spaces);
-      if (cloudflareRes.status === "fulfilled") {
+      if (appsRes.status === "fulfilled") setApps(appsRes.value.data.apps);
+    if (billingBalanceRes.status === "fulfilled") setBillingBalance(billingBalanceRes.value.data.billingBalance);
+
+    if (cloudflareRes.status === "fulfilled") {
         const zones = cloudflareRes.value.data.result;
         const metrics = zones.filter(zone => ['aobgrp.com', 'aobgagents.com'].includes(zone.name));
         setCloudflareMetrics(metrics);
@@ -125,6 +132,10 @@ const CloudStatus = () => {
 
   return (
     <Container sx={{ py: 5 }}>
+<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+<Typography level='h2' component='h2'>Cloud Resources Status</Typography>
+<Button onClick={fetchData} variant='soft' color='primary' startIcon={<FaRedo />}>Refresh Now</Button>
+</Box>
       <Typography level="h2" component="h2" gutterBottom>
         Cloud Resources Status
       </Typography>
@@ -137,10 +148,13 @@ const CloudStatus = () => {
         </Typography>
       </Box>
 
-      <Tabs value={selectedTab} onChange={handleTabChange}>
-        <Tab label="Digital Ocean" icon={<FaWater />} />
-        <Tab label="Cloudflare" icon={<SiCloudflare />} />
-      </Tabs>
+      <Tabs variant="soft" color="primary" size="lg" sx={{ mt: 2, borderRadius: "md" }} value={selectedTab} onChange={handleTabChange}>
+        <TabList sx={{ mb: 2 }}>
+<Tab label="Digital Ocean" icon={<FaWater />} />
+        <TabList sx={{ mb: 2 }}>
+<Tab label="Cloudflare" icon={<SiCloudflare />} />
+      </TabList>
+</Tabs>
 
       {selectedTab === 0 && (
         <>
@@ -168,7 +182,7 @@ const CloudStatus = () => {
                         <Typography>Metadata</Typography>
                       </AccordionSummary>
                       <AccordionDetails>
-                        <Table variant="soft" borderAxis="both" hoverRow sx={{ mt: 2 }}>
+                        <Table variant="soft" borderAxis="both" hoverRow size="md" sx={{ mt: 2 }}>
                           <Table.Head>
                             <Table.Row>
                               <Table.Cell>Key</Table.Cell>
@@ -261,7 +275,7 @@ const CloudStatus = () => {
             <Card variant="outlined" sx={{ height: '100%' }}>
               <CardContent>
                 <Typography level="body2">
-                  <strong>Account Balance:</strong> ${billing.account_balance}
+                  <strong>Account Balance:</strong> ${billing.billingBalance}
                 </Typography>
               </CardContent>
             </Card>

@@ -42,7 +42,7 @@ const AliasManager = () => {
       <Button variant="solid" color="primary" onClick={() => setShowCreateModal(true)}>
         Create Alias
       </Button>
-      <Table variant="soft" borderAxis="both" hoverRow sx={{ mt: 2 }}>
+      <Table variant="soft" borderAxis="both" hoverRow size="md" sx={{ mt: 2 }}>
         <Table.Head>
           <Table.Row>
             <Table.Cell variant='soft' component='th'>Alias</Table.Cell>
