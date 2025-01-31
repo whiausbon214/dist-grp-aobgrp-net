@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Tabs, Tab } from 'react-bootstrap';
 import axios from 'axios';
-import { FaRedo, FaWater, FaGlobe } from 'react-icons/fa';
+import { FaRedo, FaDigitalOcean, FaGlobe } from 'react-icons/fa';
 import { SiCloudflare } from 'react-icons/si';
 import DigitalOceanTab from '../components/DigitalOceanTab';
 import CloudflareTab from '../components/CloudflareTab';
@@ -91,7 +91,7 @@ const CloudStatus = () => {
       </Row>
 
       <Tabs activeKey={selectedTab} onSelect={handleTabChange} className="mb-3">
-        <Tab eventKey="digital-ocean" title={<><FaWater /> Digital Ocean</>}>
+        <Tab eventKey="digital-ocean" title={<><FaDigitalOcean /> Digital Ocean</>}>
           <DigitalOceanTab />
         </Tab>
         <Tab eventKey="cloudflare" title={<><SiCloudflare /> Cloudflare</>}>
