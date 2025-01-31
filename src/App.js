@@ -3,7 +3,7 @@ import { useState } from "react";
 import AppNavbar from "./components/Navbar";
 import Login from "./components/Login";
 import Dashboard from "./pages/Dashboard";
-import AliasManager from "./pages/DistributionGroups";
+import DistributionGroups from "./pages/DistributionGroups"; 
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -14,7 +14,7 @@ function App() {
       {authenticated ? (
         <Routes>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/distribution-groups" element={<AliasManager />} />
+          <Route path="/distribution-groups" element={<DistributionGroups />} />
         </Routes>
       ) : (
         <Login onLogin={() => setAuthenticated(true)} />

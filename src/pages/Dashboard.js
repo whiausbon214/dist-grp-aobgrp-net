@@ -1,5 +1,5 @@
 import { Container, Card, Row, Col, Button } from "react-bootstrap";
-import { FiMail, FiCloud, FiUsers, FiExternalLink } from "react-icons/fi";
+import { FiMail, FiCloud, FiExternalLink } from "react-icons/fi";
 import { SiMailchimp } from "react-icons/si";
 import { Link } from "react-router-dom";
 

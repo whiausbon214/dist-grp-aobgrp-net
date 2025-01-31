@@ -20,7 +20,7 @@ const AliasManager = () => {
 
   useEffect(() => {
     fetchAliases();
-  }, []);
+  }, [fetchAliases]);
 
   // Fetch aliases from the API
   const fetchAliases = async () => {
@@ -62,7 +62,7 @@ const AliasManager = () => {
   const openEditModal = (alias) => {
     setSelectedAlias(alias);
     setAliasName(alias.name);
-    setRecipients(alias.recipients.concat(Array(10 - alias.recipients.length).fill("")));
+    setRecipients(alias.recipients.concat(Array(10 - alias.recipients.length).fill(""))); 
     setShowEditModal(true);
   };
 
