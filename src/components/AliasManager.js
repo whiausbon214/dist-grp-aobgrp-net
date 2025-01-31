@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { Container, Button, Table, Modal, Form, Typography, Box } from '@mui/joy';
+import { Container, Button, Table, Modal, TextField, Typography, Box } from '@mui/joy';
 import { FiEdit, FiTrash2, FiAlertTriangle } from 'react-icons/fi';
 
 const AliasManager = () => {
@@ -73,21 +73,32 @@ const AliasManager = () => {
           <Typography level="h5" component="h2" gutterBottom>
             Create Alias
           </Typography>
-          <Form>
-            <Form.Label>Alias Name</Form.Label>
-            <Form.Input value={aliasName} onChange={(e) => setAliasName(e.target.value)} />
-            <Form.Label>Recipients</Form.Label>
-            {recipients.map((recipient, index) => (
-              <Form.Input key={index} value={recipient} onChange={(e) => {
+          <TextField
+            label="Alias Name"
+            value={aliasName}
+            onChange={(e) => setAliasName(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+          <Typography level="body1" gutterBottom>
+            Recipients
+          </Typography>
+          {recipients.map((recipient, index) => (
+            <TextField
+              key={index}
+              value={recipient}
+              onChange={(e) => {
                 const newRecipients = [...recipients];
                 newRecipients[index] = e.target.value;
                 setRecipients(newRecipients);
-              }} />
-            ))}
-            <Button variant="solid" color="primary" onClick={() => { /* handle create alias */ }}>
-              Create
-            </Button>
-          </Form>
+              }}
+              fullWidth
+              margin="normal"
+            />
+          ))}
+          <Button variant="solid" color="primary" onClick={() => { /* handle create alias */ }}>
+            Create
+          </Button>
         </Box>
       </Modal>
 
@@ -96,21 +107,32 @@ const AliasManager = () => {
           <Typography level="h5" component="h2" gutterBottom>
             Edit Alias
           </Typography>
-          <Form>
-            <Form.Label>Alias Name</Form.Label>
-            <Form.Input value={aliasName} onChange={(e) => setAliasName(e.target.value)} />
-            <Form.Label>Recipients</Form.Label>
-            {recipients.map((recipient, index) => (
-              <Form.Input key={index} value={recipient} onChange={(e) => {
+          <TextField
+            label="Alias Name"
+            value={aliasName}
+            onChange={(e) => setAliasName(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+          <Typography level="body1" gutterBottom>
+            Recipients
+          </Typography>
+          {recipients.map((recipient, index) => (
+            <TextField
+              key={index}
+              value={recipient}
+              onChange={(e) => {
                 const newRecipients = [...recipients];
                 newRecipients[index] = e.target.value;
                 setRecipients(newRecipients);
-              }} />
-            ))}
-            <Button variant="solid" color="primary" onClick={() => { /* handle edit alias */ }}>
-              Save
-            </Button>
-          </Form>
+              }}
+              fullWidth
+              margin="normal"
+            />
+          ))}
+          <Button variant="solid" color="primary" onClick={() => { /* handle edit alias */ }}>
+            Save
+          </Button>
         </Box>
       </Modal>
 
@@ -122,15 +144,15 @@ const AliasManager = () => {
           <Typography className="text-danger">
             This action is <strong>irreversible</strong>. Once deleted, the alias cannot be recovered.
           </Typography>
-          <Form>
-            <Form.Label><strong>Enter Password to Confirm</strong></Form.Label>
-            <Form.Input
-              type="password"
-              placeholder="Enter app password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </Form>
+          <TextField
+            label="Enter Password to Confirm"
+            type="password"
+            placeholder="Enter app password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
             <Button variant="outlined" color="neutral" onClick={() => setShowDeleteModal(false)}>
               Cancel

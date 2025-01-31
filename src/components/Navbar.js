@@ -1,9 +1,9 @@
 import { AppBar, Toolbar, IconButton, Typography, Box } from '@mui/joy';
 import { NavLink } from 'react-router-dom';
-import { FiLogOut, FiMail, FiCloud, FiHome } from 'react-icons/fi';
+import { FiMail, FiCloud, FiHome } from 'react-icons/fi';
 import { SiMailchimp } from 'react-icons/si';
 
-function AppNavbar({ onLogout }) {
+function AppNavbar() {
   return (
     <AppBar position="static">
       <Toolbar>
@@ -27,10 +27,6 @@ function AppNavbar({ onLogout }) {
           <IconButton component={NavLink} to="/cloud-status" color="inherit">
             <FiCloud size={20} />
             <Typography variant="caption">Cloud Status</Typography>
-          </IconButton>
-          <IconButton onClick={onLogout} color="inherit">
-            <FiLogOut size={20} />
-            <Typography variant="caption">Logout</Typography>
           </IconButton>
         </Box>
       </Toolbar>
