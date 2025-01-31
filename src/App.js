@@ -1,25 +1,25 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState } from "react";
-import Login from "./components/Login";
-import AliasManager from "./components/AliasManager";
 import AppNavbar from "./components/Navbar";
-import { Container } from "react-bootstrap";
+import Login from "./components/Login";
+import Dashboard from "./pages/Dashboard";
+import AliasManager from "./pages/DistributionGroups";
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
 
   return (
-    <div>
+    <Router>
+      <AppNavbar onLogout={() => setAuthenticated(false)} />
       {authenticated ? (
-        <>
-          <AppNavbar onLogout={() => setAuthenticated(false)} />
-          <Container>
-            <AliasManager />
-          </Container>
-        </>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/distribution-groups" element={<AliasManager />} />
+        </Routes>
       ) : (
         <Login onLogin={() => setAuthenticated(true)} />
       )}
-    </div>
+    </Router>
   );
 }
 
