@@ -109,7 +109,7 @@ const CloudStatus = () => {
 
   if (loading) {
     return (
-      <Container className="py-5 text-center">
+      <Container sx={{ py: 5, textAlign: 'center' }}>
         <CircularProgress />
       </Container>
     );
@@ -117,14 +117,14 @@ const CloudStatus = () => {
 
   if (error) {
     return (
-      <Container className="py-5 text-center">
+      <Container sx={{ py: 5, textAlign: 'center' }}>
         <Alert severity="error">{error}</Alert>
       </Container>
     );
   }
 
   return (
-    <Container className="py-5">
+    <Container sx={{ py: 5 }}>
       <Typography level="h2" component="h2" gutterBottom>
         Cloud Resources Status
       </Typography>

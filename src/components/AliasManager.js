@@ -138,10 +138,10 @@ const AliasManager = () => {
 
       <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
         <Box sx={{ p: 2 }}>
-          <Typography level="h5" component="h2" gutterBottom className="text-danger">
+          <Typography level="h5" component="h2" gutterBottom color="danger">
             <FiAlertTriangle /> Confirm Deletion
           </Typography>
-          <Typography className="text-danger">
+          <Typography color="danger">
             This action is <strong>irreversible</strong>. Once deleted, the alias cannot be recovered.
           </Typography>
           <TextField
